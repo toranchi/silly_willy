@@ -1,44 +1,60 @@
-#+title: toranchi_emacs
+#+title: とランチのEMACS
 #+author: とランチとランチ
 #+email: toranchitoranchi@gmail.com
 #+language: en
+#+options: \n:t ^:nil
+#+property: header-args :tangle "init.el"
+#+startup: content indent
+#+macro: test-macro (eval (format-time-string "%F %T %z"))
 
+*Test of export {{{test-macro}}}*
+
+#+CAPTION: *EMACSのために泣く*
+#+ATTR_HTML: :width 600px
+#+ATTR_ORG: :width 100px
+[[./ゴンドラの歌.png]]
+
+
+* Chatter
 This is the proof that I do not know what I am doing. Please do not look inside this files, as they provide no value to anyone.
 I reached the sad point in life where I simply cannot remember what I did, what I do and especially what I will do. I can't even tell why am I writing in English, as it is not my language either.
 
 Since words should be left to the poets, here are the words of one of the greatest ones:
-#+BEGIN_QUOTE
-Chi è che dis ch'el vin el fa mal
-l'è tutta gente, l'è tutta gente
-chi è che dis ch'el vin el fa mal
-l'è tutta gente de l'ospedal.
-Io ne ho bevuto tanto
-e non mi ha fatto male
-l'acqua sí che fa male il vino fa cantar.
 
-Ohèj che la vaga ben, che la vaga mal
-siam sul fior de la gìoventú
-pensa a la magna e bevi
-pensa a la magna e bevi
-ohèj che la vaga ben, che la vaga mal
-siam sul fior de la gioventú
-pensa a la magna e bevi
-bevi anche tu!
--- Nanni Svampa
+#+BEGIN_QUOTE
+名もない港に桃の花は咲けど
+旅の町にはやすらぎはないさ
+お前と別れたむなしさ抱いて
+俺は明日もまた北へ流れる
+
+お前のやさしさ酒に浮かべひとり
+遠い霧笛にあの夜をさがす
+愛していりゃこそつれなくしたが
+今もこの胸でゆれるほゝえみ
+
+
+男はふり向き暗い空を見上げ
+つけた煙草にふるさとを想う
+真冬の浜辺に傷あと埋め
+夢はあきらめて北へ流れる
+
+小林旭
 #+END_QUOTE
 
 とランチとランチ覚えていますよ！ This was badly copied from: [[https://raw.githubusercontent.com/protesilaos/dotfiles/refs/heads/master/emacs/.emacs.d/prot-emacs.org][Prot's organized init.el and such]]
 - =early-init.el= gets executed before init.el, so you can put some happy things there. What? I dunno!
 - =init.el= this loads all the stuff and magic things: probably I should have it load it sub-files to keep things sort of understandable
 
+#+BEGIN_QUOTE
 ├── early-init.el
 ├── init.el
 ├── stuff_organized/
 │   ├── set_the_theme.el
 │   ├── set_autocompletion.el
 │   ├── some_other_stuff.el
+#+END_QUOTE
 
-* Early Init
+* =early-init.el=
 #+begin_src emacs-lisp :tangle "early-init.el"
   ;; turn off the stuff I can't figure out how to use
   ;; menu-bar-mode is like some GUI menu of sort, not sure what it is for nor how to reach it
@@ -51,14 +67,15 @@ bevi anche tu!
   (tool-bar-mode -1)
 #+end_src
 
-
-* Init
-** package initialize
-#+begin_src emacs-lisp :tangle "init.el"
+* =init.el=
+** Package initialize
+#+begin_src emacs-lisp
   ;; use-package is available from 29+ otherwise (package-install 'use-package)
   (require 'package) ;; this always get the latest version (elpaca builds from git and helps with versioning)
     (package-initialize)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 #+end_src
+
 Package initialize docs:
 Load Emacs Lisp packages, and activate them. The variable ‘package-load-list’ controls which packages to load. If optional arg NO-ACTIVATE is non-nil, don’t activate packages.
 
@@ -67,24 +84,71 @@ It is not necessary to adjust ‘load-path’ or ‘require’ the individual pa
 _If ‘package-initialize’ is called twice during Emacs startup, signal a warning, since this is a bad idea except in highly advanced use cases.  To suppress the warning, remove the superfluous call to ‘package-initialize’ from your init-file.  If you have code which must run before ‘package-initialize’, put
 that code in the early init-file._
 
-** add package repos
-Let's add melpa to have more packages
-#+begin_src emacs-lisp :tangle "init.el"
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-#+end_src
+** Customize function
 
-** customize function
 Emacs customize =M-x customize= lets you configure variable and so on.
 Force it to write the changes in a different file from the org tangle to avoid mixing
 
-#+begin_src emacs-lisp :tangle "init.el"
-(setq custom-file (locate-user-emacs-file "custom.el"))
-(load custom-file :no-error-if-file-is-missing)
+#+begin_src emacs-lisp
+  ;; move the changed provided from customize to a separate file from init.el
+  (setq custom-file (locate-user-emacs-file "custom.el"))
+  (load custom-file :no-error-if-file-is-missing)
 #+end_src
 
-** theming
+** Org
+To be able to use:
+- =#+ATTR_HTML: :width 600px=
+- =#+ATTR_ORG: :width 100px=
+it is necessary to turn off this variable
+#+BEGIN_QUOTE
+When non-nil, use the actual width of images when inlining them.
 
-#+begin_src emacs-lisp :tangle "init.el"
+When set to a number, use imagemagick (when available) to set the
+image’s width to this value.
+
+When set to a number in a list, try to get the width from any
+#+ATTR.* keyword if it matches a width specification like
+#+END_QUOTE
+
+#+begin_src emacs-lisp
+  ;; permit the use or #+ATTR_ORG: :width
+  (setq org-image-actual-width nil)
+
+#+end_src
+
+
+** Emacs package
+The following configs were suggested by vertico docs
+#+begin_src emacs-lisp
+  ;; A few more useful configurations...
+  (use-package emacs
+    :custom
+    ;; Support opening new minibuffers from inside existing minibuffers.
+    (enable-recursive-minibuffers t)
+    ;; Hide commands in M-x which do not work in the current mode.  Vertico
+    ;; commands are hidden in normal buffers. This setting is useful beyond
+    ;; Vertico.
+    (read-extended-command-predicate #'command-completion-default-include-p)
+    :init
+    ;; Add prompt indicator to `completing-read-multiple'.
+    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+    (defun crm-indicator (args)
+      (cons (format "[CRM%s] %s"
+                    (replace-regexp-in-string
+                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                     crm-separator)
+                    (car args))
+            (cdr args)))
+    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+    ;; Do not allow the cursor in the minibuffer prompt
+    (setq minibuffer-prompt-properties
+          '(read-only t cursor-intangible t face minibuffer-prompt))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+#+end_src
+** Theming
+
+#+begin_src emacs-lisp
   ;; set theme colors
   (use-package spacemacs-theme
     :ensure t
@@ -94,16 +158,17 @@ Force it to write the changes in a different file from the org tangle to avoid m
 ** Fonts
 
 I don't understand this part and will need to talk to Prot
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
 (let ((mono-spaced-font "Monospace")
       (proportionately-spaced-font "Sans"))
   (set-face-attribute 'default nil :family mono-spaced-font :height 150)
   (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
   (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
 #+end_src
+
 ** Dired
 NO IDEA WHAT THIS DOES, i need to ask to Prot
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
   (use-package dired
     :ensure nil
     :commands (dired)
@@ -128,11 +193,11 @@ NO IDEA WHAT THIS DOES, i need to ask to Prot
     :config
     (setq dired-subtree-use-backgrounds nil))  
 #+end_src  
-** helpers
+** Helpers
 
 *** Rainbow delimeters
 Add rainbow delimiters cause ((((()))))
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
   (use-package rainbow-delimiters 
     :ensure t
     :config (rainbow-delimiters-mode 1))
@@ -140,7 +205,7 @@ Add rainbow delimiters cause ((((()))))
 
 *** Delsel
 I do *NOT* want to write over selected regions. I am happy to have go use *Delete*
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
   ;; (use-package delsel
   ;;   :ensure nil ; no need to install it as it is built-in
   ;;   :hook (after-init . delete-selection-mode))
@@ -160,7 +225,7 @@ Signal a ‘quit’ condition.
 During execution of Lisp code, this character causes a quit directly.
 At top-level, as an editor command, this simply beeps.
 #+END_QUOTE
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
   (defun prot/keyboard-quit-dwim ()
     "Do-What-I-Mean behaviour for a general `keyboard-quit'.
 
@@ -193,7 +258,7 @@ Prot says:
 #+BEGIN_QUOTE
 The built-in savehist package keeps a record of user inputs and stores them across sessions. Thus, the user will always see their latest choices closer to the top (such as with M-x).
 #+END_QUOTE
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
   (use-package savehist
     :ensure nil ; it is built-in
     :hook (after-init . savehist-mode))
@@ -201,7 +266,7 @@ The built-in savehist package keeps a record of user inputs and stores them acro
 
 *** Nerd fonts
 Set nerd fonts to be used in a few places
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
   (use-package nerd-icons
     :ensure t)
 
@@ -223,12 +288,17 @@ Set nerd fonts to be used in a few places
     (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
-** minibuffer setup
+** Minibuffer setup
 *** Vertico
 Vertico: organizes the minibuffer in a vertical layout and help with the search of completions
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
   (use-package vertico
     :ensure t
+    :custom
+       ;; (vertico-scroll-margin 0) ;; Different scroll margin
+       ;; (vertico-count 20) ;; Show more candidates
+       ;; (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+    (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
     :config (vertico-mode 1)) ;; it is a minor-mode and it enabled with 1
 #+end_src
 
@@ -245,7 +315,7 @@ Consult: gives previews where available, it combines buffers, bookmarks and rece
 Can be used on many things, ex, Info pages, you can select a info manual like emcacs and search for "mini-buffer" and go through all the relevant pages quickly
 
 consult-buffer: to go through buffers. 
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
     (use-package consult
       :ensure t
       :bind
@@ -257,7 +327,24 @@ consult-buffer: to go through buffers.
 
 *** Orderless
 Extend search to have out of order items
-#+begin_src emacs-lisp :tangle "init.el"
+
+The recommended settings according to vertico docs
+#+BEGIN_QUOTE
+   I recommend to give Orderless completion a try, which is more
+flexible and powerful than the default completion styles.
+
+     ;; Optionally use the `orderless' completion style.
+     (use-package orderless
+       :custom
+       ;; Configure a custom style dispatcher (see the Consult wiki)
+       ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+       ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+       (completion-styles '(orderless basic))
+       (completion-category-defaults nil)
+       (completion-category-overrides '((file (styles partial-completion)))))
+#+END_QUOTE
+
+#+begin_src emacs-lisp
   (use-package orderless
       :ensure t
       :config
@@ -288,7 +375,7 @@ possible values are the same as in ‘completions-sort’.
 - ‘annotation-function’: function to add annotations in *Completions*.
 - ‘affixation-function’: function to prepend/append a prefix/suffix.
 - ‘eager-display’: function to show *Completions* eagerly.
-See more description of metadata in ‘completion-metadata’.
+See mored escription of metadata in ‘completion-metadata’.
 
 Categories are symbols such as ‘buffer’ and ‘file’, used when
 completing buffer and file names, respectively.
@@ -303,7 +390,7 @@ overrides the default specified in ‘completion-category-defaults’.
 
 ** Corfu COmpletion in Region FUnction
 
-#+begin_src emacs-lisp :tangle "init.el"
+#+begin_src emacs-lisp
   ;; From Prot will need to understand
       ;;; Corfu (in-buffer completion popup)
 
@@ -325,5 +412,31 @@ overrides the default specified in ‘completion-category-defaults’.
       (add-to-list 'savehist-additional-variables 'corfu-history)))
 #+end_src
 
-* TODO Figure out why fuzzy search is not the best always! consult-line search for bind, will match bind but also all lines .*b.*i.*n.*d.*
 
+
+** EMMS
+emms smart browse help seeing the list of songs to be played
+I found this config here https://lucidmanager.org/productivity/configure-emms/
+#+begin_src emacs-lisp
+  ;; Emacs Multimedia System
+  (use-package emms
+    :ensure t
+    :config
+    (require 'emms-setup)
+    (require 'emms-mpris)
+    (emms-all)
+    (emms-default-players)
+    (emms-mpris-enable)
+    :custom
+    (emms-browser-covers #'emms-browser-cache-thumbnail-async)
+    :bind
+    (("C-c w m b" . emms-browser)
+     ("C-c w m e" . emms)
+     ("C-c w m p" . emms-play-playlist )
+     ("<XF86AudioPrev>" . emms-previous)
+     ("<XF86AudioNext>" . emms-next)
+     ("<XF86AudioPlay>" . emms-pause)))
+#+end_src
+
+** Packages to look?
+- ace-window or something to move between windows in a better way
