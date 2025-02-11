@@ -1,0 +1,329 @@
+#+title: toranchi_emacs
+#+author: とランチとランチ
+#+email: toranchitoranchi@gmail.com
+#+language: en
+
+This is the proof that I do not know what I am doing. Please do not look inside this files, as they provide no value to anyone.
+I reached the sad point in life where I simply cannot remember what I did, what I do and especially what I will do. I can't even tell why am I writing in English, as it is not my language either.
+
+Since words should be left to the poets, here are the words of one of the greatest ones:
+#+BEGIN_QUOTE
+Chi è che dis ch'el vin el fa mal
+l'è tutta gente, l'è tutta gente
+chi è che dis ch'el vin el fa mal
+l'è tutta gente de l'ospedal.
+Io ne ho bevuto tanto
+e non mi ha fatto male
+l'acqua sí che fa male il vino fa cantar.
+
+Ohèj che la vaga ben, che la vaga mal
+siam sul fior de la gìoventú
+pensa a la magna e bevi
+pensa a la magna e bevi
+ohèj che la vaga ben, che la vaga mal
+siam sul fior de la gioventú
+pensa a la magna e bevi
+bevi anche tu!
+-- Nanni Svampa
+#+END_QUOTE
+
+とランチとランチ覚えていますよ！ This was badly copied from: [[https://raw.githubusercontent.com/protesilaos/dotfiles/refs/heads/master/emacs/.emacs.d/prot-emacs.org][Prot's organized init.el and such]]
+- =early-init.el= gets executed before init.el, so you can put some happy things there. What? I dunno!
+- =init.el= this loads all the stuff and magic things: probably I should have it load it sub-files to keep things sort of understandable
+
+├── early-init.el
+├── init.el
+├── stuff_organized/
+│   ├── set_the_theme.el
+│   ├── set_autocompletion.el
+│   ├── some_other_stuff.el
+
+* Early Init
+#+begin_src emacs-lisp :tangle "early-init.el"
+  ;; turn off the stuff I can't figure out how to use
+  ;; menu-bar-mode is like some GUI menu of sort, not sure what it is for nor how to reach it
+  (menu-bar-mode -1)
+
+  ;; some scroll bar I guess. Mom don't leave a scrollbar behind, I don't want nothin', I can't use nothin'
+  (scroll-bar-mode -1)
+
+  ;; Some buttons like Save to be reached with a Mouse. Maybe the day I buy a mouse I will activate it. I used to have Rats, but never a mouse.
+  (tool-bar-mode -1)
+#+end_src
+
+
+* Init
+** package initialize
+#+begin_src emacs-lisp :tangle "init.el"
+  ;; use-package is available from 29+ otherwise (package-install 'use-package)
+  (require 'package) ;; this always get the latest version (elpaca builds from git and helps with versioning)
+    (package-initialize)
+#+end_src
+Package initialize docs:
+Load Emacs Lisp packages, and activate them. The variable ‘package-load-list’ controls which packages to load. If optional arg NO-ACTIVATE is non-nil, don’t activate packages.
+
+It is not necessary to adjust ‘load-path’ or ‘require’ the individual packages after calling ‘package-initialize’ -- this is taken care of by ‘package-initialize’.
+
+_If ‘package-initialize’ is called twice during Emacs startup, signal a warning, since this is a bad idea except in highly advanced use cases.  To suppress the warning, remove the superfluous call to ‘package-initialize’ from your init-file.  If you have code which must run before ‘package-initialize’, put
+that code in the early init-file._
+
+** add package repos
+Let's add melpa to have more packages
+#+begin_src emacs-lisp :tangle "init.el"
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+#+end_src
+
+** customize function
+Emacs customize =M-x customize= lets you configure variable and so on.
+Force it to write the changes in a different file from the org tangle to avoid mixing
+
+#+begin_src emacs-lisp :tangle "init.el"
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file :no-error-if-file-is-missing)
+#+end_src
+
+** theming
+
+#+begin_src emacs-lisp :tangle "init.el"
+  ;; set theme colors
+  (use-package spacemacs-theme
+    :ensure t
+    :config (load-theme 'spacemacs-dark t))
+#+end_src
+
+** Fonts
+
+I don't understand this part and will need to talk to Prot
+#+begin_src emacs-lisp :tangle "init.el"
+(let ((mono-spaced-font "Monospace")
+      (proportionately-spaced-font "Sans"))
+  (set-face-attribute 'default nil :family mono-spaced-font :height 150)
+  (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
+  (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
+#+end_src
+** Dired
+NO IDEA WHAT THIS DOES, i need to ask to Prot
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package dired
+    :ensure nil
+    :commands (dired)
+    :hook
+    ((dired-mode . dired-hide-details-mode)
+     (dired-mode . hl-line-mode))
+    :config
+    (setq dired-recursive-copies 'always)
+    (setq dired-recursive-deletes 'always)
+    (setq delete-by-moving-to-trash t)
+    (setq dired-dwim-target t))
+
+  (use-package dired-subtree
+    :ensure t
+    :after dired
+    :bind
+    ( :map dired-mode-map
+      ("<tab>" . dired-subtree-toggle)
+      ("TAB" . dired-subtree-toggle)
+      ("<backtab>" . dired-subtree-remove)
+      ("S-TAB" . dired-subtree-remove))
+    :config
+    (setq dired-subtree-use-backgrounds nil))  
+#+end_src  
+** helpers
+
+*** Rainbow delimeters
+Add rainbow delimiters cause ((((()))))
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package rainbow-delimiters 
+    :ensure t
+    :config (rainbow-delimiters-mode 1))
+#+end_src
+
+*** Delsel
+I do *NOT* want to write over selected regions. I am happy to have go use *Delete*
+#+begin_src emacs-lisp :tangle "init.el"
+  ;; (use-package delsel
+  ;;   :ensure nil ; no need to install it as it is built-in
+  ;;   :hook (after-init . delete-selection-mode))
+#+end_src
+
+*** C-g behavior
+This is straight from Prot: https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/
+It gives an improve =C-g= that first close the minibuffer if it is open, since 90% of the times that is what people what to do.
+
+The original behavior is as follow
+#+BEGIN_QUOTE
+keyboard-quit is an interactive byte-code-function in ‘simple.el’.
+
+(keyboard-quit)
+
+Signal a ‘quit’ condition.
+During execution of Lisp code, this character causes a quit directly.
+At top-level, as an editor command, this simply beeps.
+#+END_QUOTE
+#+begin_src emacs-lisp :tangle "init.el"
+  (defun prot/keyboard-quit-dwim ()
+    "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+  The generic `keyboard-quit' does not do the expected thing when
+  the minibuffer is open.  Whereas we want it to close the
+  minibuffer, even without explicitly focusing it.
+
+  The DWIM behaviour of this command is as follows:
+
+  - When the region is active, disable it.
+  - When a minibuffer is open, but not focused, close the minibuffer.
+  - When the Completions buffer is selected, close it.
+  - In every other case use the regular `keyboard-quit'."
+    (interactive)
+    (cond
+     ((region-active-p)
+      (keyboard-quit))
+     ((derived-mode-p 'completion-list-mode)
+      (delete-completion-window))
+     ((> (minibuffer-depth) 0)
+      (abort-recursive-edit))
+     (t
+      (keyboard-quit))))
+
+  (define-key global-map (kbd "C-g") #'prot/keyboard-quit-dwim)
+#+end_src
+
+*** Savehist
+Prot says:
+#+BEGIN_QUOTE
+The built-in savehist package keeps a record of user inputs and stores them across sessions. Thus, the user will always see their latest choices closer to the top (such as with M-x).
+#+END_QUOTE
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package savehist
+    :ensure nil ; it is built-in
+    :hook (after-init . savehist-mode))
+#+end_src
+
+*** Nerd fonts
+Set nerd fonts to be used in a few places
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package nerd-icons
+    :ensure t)
+
+  (use-package nerd-icons-completion
+    :ensure t
+    :after marginalia
+    :config
+    (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+  (use-package nerd-icons-corfu
+    :ensure t
+    :after corfu
+    :config
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
+  (use-package nerd-icons-dired
+    :ensure t
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
+#+end_src
+
+** minibuffer setup
+*** Vertico
+Vertico: organizes the minibuffer in a vertical layout and help with the search of completions
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package vertico
+    :ensure t
+    :config (vertico-mode 1)) ;; it is a minor-mode and it enabled with 1
+#+end_src
+
+*** Marginalia
+Marginalia: gives extra information in the mini buffer
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package marginalia
+    :ensure t
+    :config (marginalia-mode 1)) ;; it is a minor mode
+#+end_src
+
+*** Consult
+Consult: gives previews where available, it combines buffers, bookmarks and recently visited files
+Can be used on many things, ex, Info pages, you can select a info manual like emcacs and search for "mini-buffer" and go through all the relevant pages quickly
+
+consult-buffer: to go through buffers. 
+#+begin_src emacs-lisp :tangle "init.el"
+    (use-package consult
+      :ensure t
+      :bind
+      ( :map global-map
+        ("M-g M-g" . consult-goto-line)))
+#+end_src
+
+*** Embark
+
+*** Orderless
+Extend search to have out of order items
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package orderless
+      :ensure t
+      :config
+      ;;(setq orderless-matching-styles '(orderless-prefixes orderless-regexp orderless-flex))
+      (setq completion-styles '(orderless basic))
+      (setq completion-category-overrides '((file (styles basic partial-completion))))
+      (setq completion-category-default nil))
+#+end_src
+
+#+BEGIN_QUOTE
+completion-category-overrides is a variable defined in ‘minibuffer.el’.
+
+Its value is ((file (styles basic partial-completion)))
+Original value was nil
+
+List of category-specific user overrides for completion metadata.
+
+Each override has the shape (CATEGORY . ALIST) where ALIST is
+an association list that can specify properties such as:
+- ‘styles’: the list of ‘completion-styles’ to use for that category.
+- ‘cycle’: the ‘completion-cycle-threshold’ to use for that category.
+- ‘cycle-sort-function’: function to sort entries when cycling.
+- ‘display-sort-function’: nil means to use either the sorting
+function from metadata, or if that is nil, fall back to ‘completions-sort’;
+‘identity’ disables sorting and keeps the original order; and other
+possible values are the same as in ‘completions-sort’.
+- ‘group-function’: function for grouping the completion candidates.
+- ‘annotation-function’: function to add annotations in *Completions*.
+- ‘affixation-function’: function to prepend/append a prefix/suffix.
+- ‘eager-display’: function to show *Completions* eagerly.
+See more description of metadata in ‘completion-metadata’.
+
+Categories are symbols such as ‘buffer’ and ‘file’, used when
+completing buffer and file names, respectively.
+
+If a property in a category is specified by this variable, it
+overrides the default specified in ‘completion-category-defaults’.
+
+  This variable was introduced, or its default value was changed, in
+  version 31.1 of Emacs.
+  You can customize this variable.
+#+END_QUOTE
+
+** Corfu COmpletion in Region FUnction
+
+#+begin_src emacs-lisp :tangle "init.el"
+  ;; From Prot will need to understand
+      ;;; Corfu (in-buffer completion popup)
+
+  (use-package corfu
+    :ensure t
+    :hook (after-init . global-corfu-mode)
+    :bind (:map corfu-map ("<tab>" . corfu-complete))
+    :config
+    (setq tab-always-indent 'complete)
+    (setq corfu-preview-current nil)
+    (setq corfu-min-width 20)
+
+    (setq corfu-popupinfo-delay '(1.25 . 0.5))
+    (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
+
+    ;; Sort by input history (no need to modify `corfu-sort-function').
+    (with-eval-after-load 'savehist
+      (corfu-history-mode 1)
+      (add-to-list 'savehist-additional-variables 'corfu-history)))
+#+end_src
+
+* TODO Figure out why fuzzy search is not the best always! consult-line search for bind, will match bind but also all lines .*b.*i.*n.*d.*
+
