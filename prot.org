@@ -1,0 +1,362 @@
+#+title: Meetings with Prot
+#+author: とランチとランチ
+#+email: toranchitoranchi@gmail.com
+#+language: en
+#+startup: content indent
+
+reminder of org mode
+*, a bold object,
+
+/, an italic object,
+_ an underline object,
+=, a verbatim object,
+~, a code object
++, a strike-through object
+
+* Meeting 1: introductions
+** Goal of the meeting
+- Understand the basic of a configuration file
+- Understand the correct way to install and configure packages
+- How to decide packages
+- How to read some of the Syntax used in Prot configs
+** General Info and advice
+- Install only things that are absolutely needed
+- understand what is part of emacs and what comes from packages
+  - ex. org is built into emacs and so is babel
+- it is necessary to require 'package to use the macro =use-package=
+- learn conventions: hooks are nameOfMode-hook and are always part of a mode
+- maps might be present with mode nameOfMode-map
+  - to list all maps M-x =describe-keymap=
+- check his site
+  - https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/
+
+TO NOTICE: having a .emacs file in the home directory will prevent --init-directory to actually work
+*** install things only if absolutely needed
+*** org is built into emacs and so is babel including =org-babel-tangle=
+
+** use-package remove boilerplate to install
+:ensure t handles installation
+#+begin_src emacs-lisp
+  (require 'package) ;; this always get the latest version (elpaca builds from git and helps with versioning)
+  (package-initialize)
+
+  (use-package vertico
+    :ensure t
+    :config (vertico-mode 1)) ;; it is a minor-mode and it enabled with 1
+#+end_src
+
+To notice
+- :ensure t cause the package to be installed in the latest version. Doesn't handle upgrades
+- :config get configuration for the package, in this case activation
+
+** macro - mini language in lisp - use-package is a macro and not a function
+#+BEGIN_QUOTE
+A "macro" in Lisp is fundamentally different from a "macro" in C, as Lisp macros are much more powerful, allowing for complex code manipulation at compile time by transforming Lisp expressions into new Lisp expressions, while C macros are essentially simple text substitutions, offering limited manipulation capabilities and often considered less flexible and potentially error-prone; essentially, Lisp macros are a built-in language feature for code generation, whereas C macros are a preprocessor tool for basic text replacement.
+
+C macros: Primarily used for simple text substitutions within the code, often for defining constants or performing basic arithmetic operations.
+
+From Stack Overflow: [[https://stackoverflow.com/questions/4980520/what-can-you-do-with-lisp-macros-that-you-cant-do-with-first-class-functions][Lisp Macro Vs Function]]
+First of all Lisp has first-class functions too, so you could as well ask: "Why do I need macros in Lisp if I already have first-class functions". The answer to that is that first-class functions don't allow you to play with syntax.
+
+On a cosmetic level, first-class functions allow you to write f(filename, some_function) or f(filename, lambda fh: fh.whatever(x)), but not f(filename, fh, fh.whatever(x)). Though arguably that's a good thing because in that last case it is a lot less clear where fh suddenly comes from.
+
+More importantly functions can only contain code that is valid. So you can't write a higher-order function reverse_function that takes a function as an argument and executes it "in reverse", so that reverse_function(lambda: "hello world" print) would execute print "hello world". With a macro you can do this. Of course this particular example is quite silly, but this ability is enormously useful when embedding domain specific languages.
+
+For example you couldn't implement common lisp's loop construct in python. Hell, you couldn't even implement python's for ... in construct in python if it wasn't really built-in - at least not with that syntax. Sure you could implement something like for(collection, function), but that's a lot less pretty.
+#+END_QUOTE
+
+*** pp-macroexpand-last-sexp permits pretty print Macro, if positioned at the end of the call of the macro (also work on selected region)
+In this case it expands to progn 
+#+begin_src emacs-lisp
+  (use-package corfu
+    :ensure t
+    :if (display-graphic-p)
+    :hook (after-init . global-corfu-mode)
+    ;; I also have (setq tab-always-indent 'complete) for TAB to complete
+    ;; when it does not need to perform an indentation change.
+    :bind (:map corfu-map ("<tab>" . corfu-complete))
+    :config
+    (setq corfu-preview-current nil)
+    (setq corfu-min-width 20)
+
+    (setq corfu-popupinfo-delay '(1.25 . 0.5))
+    (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
+
+    ;; Sort by input history (no need to modify `corfu-sort-function').
+    (with-eval-after-load 'savehist
+      (corfu-history-mode 1)
+      (add-to-list 'savehist-additional-variables 'corfu-history)))
+#+end_src
+expands to
+#+begin_src emacs-lisp
+  (progn
+  (use-package-ensure-elpa 'corfu '(t) 'nil)
+  (when (display-graphic-p)
+    (defvar use-package--warning6
+      #'(lambda (keyword err)
+	  (let
+	      ((msg
+		(format "%s/%s: %s" 'corfu keyword
+			(error-message-string err))))
+	    (display-warning 'use-package msg :error))))
+    (condition-case-unless-debug err
+	(progn
+	  (unless (fboundp 'global-corfu-mode)
+	    (autoload #'global-corfu-mode "corfu" nil t))
+	  (unless (fboundp 'corfu-complete)
+	    (autoload #'corfu-complete "corfu" nil t))
+	  (eval-after-load 'corfu
+	    '(condition-case-unless-debug err
+		 (progn
+		   (setq corfu-preview-current nil)
+		   (setq corfu-min-width 20)
+		   (setq corfu-popupinfo-delay '(1.25 . 0.5))
+		   (corfu-popupinfo-mode 1)
+		   (with-eval-after-load 'savehist
+		     (corfu-history-mode 1)
+		     (add-to-list 'savehist-additional-variables
+				  'corfu-history))
+		   t)
+	       (error (funcall use-package--warning6 :config err))))
+	  (add-hook 'after-init-hook #'global-corfu-mode)
+	  (bind-keys :package corfu :map corfu-map
+		     ("<tab>" . corfu-complete)))
+      (error (funcall use-package--warning6 :catch err)))))
+
+#+end_src
+
+*** Progn use
+Explanation from: [[http://emacs.stackexchange.com/questions/18570/when-why-should-i-use-progn][Progn from Macro]]
+
+progn is typically used when dealing with macros. Some macros (use-package is a macro, last I checked) accept only 1 form, where others consume all remaining forms.
+progn is used in the former case to turn a sequence of forms into a single form.
+
+In your examples, the first one uses progn and thus there is 1 form after :config. In the second, there are 3 forms. If the use-package macro only expects 1 form following :config, then it will cause an error.
+
+It is worth noting that using progn works in both cases, while omitting it only works if the macro accepts multiple forms. As a result of this, some people prefer to simply always use progn, because it will always work.
+
+*** :custom calls the customize in emacs (mx- customize is a GUI to customize) This is the Custom UI - interface
+customize will write them to your init.el
+if instead of :custom you use :config, you need to setq for variables, because that is done internally by custom
+:init is like config but executed first
+*** DONE look into customize and :custom
+*** there is custom-file var to say where to put your custom selections
+
+*** :hook (after-init . global-corfu-mode) after-init executes after init is run
+it is a dotted pair link the second to the first
+after-init-hook the -hook is omitted, but it is present in the help
+hook or :bind are executed not immediately
+
+  (use-package consult
+    :ensure t
+    :bind
+    ( :map global-map
+      ("M-g M-g" . consult-goto-line)))
+:bind example - this defers load of consult till you click M-gM-g
+this is advanced and used the internal DSL so the code is hard to understand
+  
+
+EX.
+  (use-package corfu
+    :ensure t
+    :if (display-graphic-p)
+    :hook (after-init . global-corfu-mode)
+    ;; I also have (setq tab-always-indent 'complete) for TAB to complete
+    ;; when it does not need to perform an indentation change.
+    :bind (:map corfu-map ("<tab>" . corfu-complete))
+    :config
+    (setq corfu-preview-current nil)
+    (setq corfu-min-width 20)
+
+    (setq corfu-popupinfo-delay '(1.25 . 0.5))
+    (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
+
+    ;; Sort by input history (no need to modify `corfu-sort-function').
+    (with-eval-after-load 'savehist
+      (corfu-history-mode 1)
+      (add-to-list 'savehist-additional-variables 'corfu-history)))
+:if (a condition that might block the execution)
+*** :bind
+under :bind you can put all keybinds
+(use-package consult
+:bind
+( 
+("M-g" . fn))
+(....)
+)
+SAME AS BEFORE the :map to global is the default
+(use-package consult
+:bind
+( :map global-mode
+("M-g" . fn))
+(....)
+)
+With multi maps
+(use-package consult
+:bind
+( :map global-mode
+("M-g" . fn))
+:map org-mode-map
+("..." . fn))
+(....)
+
+** describe-packages give docs regarding a package
+ex: M-x describe-package orderless gives the documentation
+[[https://github.com/oantolin/orderless][Orderless Github]]
+The docs appear to be kept in a texi file, possibly texinfo
+[[https://github.com/oantolin/orderless/blob/master/orderless.texi][https://github.com/oantolin/orderless/blob/master/orderless.texi]]
+
+** tab on region does smart indent (this is done by Major mode)
+** orderless - like a fuzzy with break with spaces to separate words
+not a minor mode
+  This package provides an `orderless' /completion style/ that divides
+  the pattern into space-separated components, and matches candidates
+  that match all of the components in any order. Each component can
+  match in any one of several ways: literally, as a regexp, as an
+  initialism, in the flex style, or as multiple word prefixes. By
+  default, regexp and literal matches are enabled.
+
+  It has few ways to chain the failover completion selections
+#+begin_src emacs-lisp
+    (use-package orderless
+    :ensure t
+    :config
+    (setq orderless-matching-styles '(orderless-flex))
+    (setq completion-styles '(orderless basic))
+    (setq completion-category-overrides '((file (styles basic partial-completion))))
+    (setq completion-category-default nil))
+#+end_src
+
+
+** global-mode key apply to all buffers - the local is nameOfMode-mode (major or minors)
+minors may or not have keymaps but always have hooks
+
+** same convention for hooks nameOfMode-hook
+
+
+* Meeting 2:
+** TODO Emacs lisp API and following the build of emacs
+- start looking at the emacs api and list
+- how to follow the dev of emacs
+  - subscribe to emacs-devel to see what is going on
+  - and look at git repo - savannah GNU server
+  - also look at bug-gnu email list
+- on describe function and you can link to the C source (i can see if because i built it from source)
+#+begin_quote
+  self-insert-command is an interactive primitive-function in ‘C source
+code’.
+
+(self-insert-command N &optional C)
+
+Insert the character you type.
+Whichever character C you type to run this command is inserted.
+The numeric prefix argument N says how many times to repeat the insertion.
+Before insertion, ‘expand-abbrev’ is executed if the inserted character does
+not have word syntax and the previous character in the buffer does.
+After insertion, ‘internal-auto-fill’ is called if
+‘auto-fill-function’ is non-nil and if the ‘auto-fill-chars’ table has
+a non-nil value for the inserted character.  At the end, it runs
+‘post-self-insert-hook’.
+
+  Probably introduced at or before Emacs version 22.1.
+#+end_quote
+- there are 2 manuals - emacs manual for users
+  - emacs lisp reference manual (this one is the useful one)
+    - ex. create a new frame, what params do they get ...
+** TODO Emoji
+there is some suport and ther are libs like emojifi but have to test to see if the mess with org tagging
+- :warning:⚠️ =shortdoc= gives a quick reference of functions for developing
+- look into abbrev mode https://protesilaos.com/codelog/2024-02-03-emacs-abbrev-mode/
+
+  
+* Prot Videos Consumed
+** https://protesilaos.com/codelog/2025-01-26-emacs-organise-init/
+Added changed to toranchi emacs configs - some cool orgmode tricks like
+- #+startup
+- #+macro
+- #+property
+
+** https://protesilaos.com/codelog/2024-02-17-emacs-modern-minibuffer-packages/
+Goes over vertico, marginalia, consult and embark
+I have some initial configs for
+- vertico
+- marginalia
+I need to learn more about Consult and Embark
+** 
+
+* Questions for Prot
+** OPEN
+** CLOSED
+- why i can't call consult-narrow-help from the minibuffer? outside the mini buffer it tells i need to be in a minibuffer, in the minibuffer it tells me i can't call because i am in a minibuffer? do i need to allow recursive minibuffers? and how to do that?
+  - *ANSWER: you need that, unless you use key binded then it would work - this would be in the minibuffer key map - in this case vertico mode map*
+
+-   ;; set theme colors
+  (use-package spacemacs-theme
+    :ensure t
+    :config (load-theme 'spacemacs-dark t))
+was failing to run, but after installing the package manually it worked. What is causing this behavior?
+Also of interest list-packages would have the package but package-install would not have the package
+
+  - *ANSWER: (could be some bug in development) - package archive might not have been updated.*
+
+
+- #+begin_src emacs-lisp :tangle "init.el"
+  (use-package rainbow-delimiters 
+    :ensure t
+    :config (rainbow-delimiters-mode 1))
+  #+end_src
+ i have to activate this manually everytime, why?
+ 
+  - *ANSWER:some minor modes have separation between global and local - I will need to add an hook to enable*
+  - *give a try to smartparens (look at electric indent mode)*
+ 
+- Figured out why fuzzy search is not the best always! consult-line search for bind, will match bind but also all lines .*b.*i.*n.*d.* (need help verify i set it correctly)
+  
+- vertico docs, can i really open multiple files at once?
+#+BEGIN_QUOTE
+  The ‘basic’ completion style is specified as fallback in addition to
+‘orderless’ in order to ensure that completion commands which rely on
+dynamic completion tables, e.g., ‘completion-table-dynamic’ or
+‘completion-table-in-turn’, work correctly.  See the Consult wiki
+(https://github.com/minad/consult/wiki#minads-orderless-configuration)
+for my advanced Orderless configuration with style dispatchers.
+Additionally enable ‘partial-completion’ for file path expansion.
+‘partial-completion’ is important for file wildcard support in
+‘find-file’.  In order to open multiple files with a wildcard at once,
+you have to submit the prompt with ‘M-RET’.  Alternative first move to
+the prompt and then press ‘RET’.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+     In order to get accustomed with the package ecosystem, I recommend
+the following quick start approach:
+
+  1. Start with plain Emacs (‘emacs -Q’).
+  2. Install and enable Vertico to get incremental minibuffer
+     completion.
+  3. Install Orderless and/or configure the built-in completion styles
+     for more flexible minibuffer filtering.
+  4. Install Marginalia if you like rich minibuffer annotations.
+  5. Install Embark and add two keybindings for ‘embark-dwim’ and
+     ‘embark-act’.  I am using the mnemonic keybindings ‘M-.’ and ‘C-.’
+     since these commands allow you to act on the object at point or in
+     the minibuffer.
+  6. Install Consult if you want additional featureful completion
+     commands, e.g., the buffer switcher ‘consult-buffer’ with preview
+     or the line-based search ‘consult-line’.
+  7. Install Embark-Consult and Wgrep for export from ‘consult-line’ to
+     ‘occur-mode’ buffers and from ‘consult-grep’ to editable
+     ‘grep-mode’ buffers.
+  8. Fine tune Vertico with *note extensions: Extensions.
+#+END_QUOTE
+* Homeworks
+** TODO emacs building and following dev channels [0/3][0%]       :emacsdev:
+*** TODO sign up for dev channels with toranchi email
+*** TODO set up the git repo from savannah and set up something to build and test
+*** TODO look at prot vide on contributing
+** TODO look at the abbrev video
+** TODO fill notes about the videos consumed so I don't forget
+** TODO look at adding some of the configs for orgmode 
+** TODO set up py dev env with eglot and pyenv
+to notice that Flymake, ElDoc, Xref, Project are in emacs already
+- I should use the built in before considering external packages

@@ -390,6 +390,7 @@ overrides the default specified in ‘completion-category-defaults’.
 
 ** Corfu COmpletion in Region FUnction
 
+
 #+begin_src emacs-lisp
   ;; From Prot will need to understand
       ;;; Corfu (in-buffer completion popup)
@@ -417,6 +418,8 @@ overrides the default specified in ‘completion-category-defaults’.
 ** EMMS
 emms smart browse help seeing the list of songs to be played
 I found this config here https://lucidmanager.org/productivity/configure-emms/
+
+After the basic config there are a couple of helper functions to reduce the data displayed on the modeline
 #+begin_src emacs-lisp
   ;; Emacs Multimedia System
   (use-package emms
@@ -436,7 +439,53 @@ I found this config here https://lucidmanager.org/productivity/configure-emms/
      ("<XF86AudioPrev>" . emms-previous)
      ("<XF86AudioNext>" . emms-next)
      ("<XF86AudioPlay>" . emms-pause)))
+
+  ;; https://www.reddit.com/r/emacs/comments/qg2d0k/emms_modeline_shows_full_path_to_the_songs_i_only/
+  ;; EMMS puts too much garbage about the song in the modeline, this reduces it
+  (defun track-title-from-file-name (file)
+    "For using with EMMS description functions. Extracts the track
+  title from the file name FILE, which just means a) taking only
+  the file component at the end of the path, and b) removing any
+  file extension."
+    (with-temp-buffer
+      (save-excursion (insert (file-name-nondirectory (directory-file-name file))))
+      (ignore-error 'search-failed
+        (search-forward-regexp (rx "." (+ alnum) eol))
+        (delete-region (match-beginning 0) (match-end 0)))
+      (buffer-string)))
+
+  (defun my-emms-track-description (track)
+    "Return a description of TRACK, for EMMS, but try to cut just
+  the track name from the file name, and just use the file name too
+  rather than the whole path."
+    (let ((artist (emms-track-get track 'info-artist))
+          (title (emms-track-get track 'info-title)))
+      (cond ((and artist title)
+             ;; Converting the artist/title to a string works around a bug in `emms-info-exiftool'
+             ;; where, if your track name is a number, e.g. "1999" by Jeroen Tel, then it will be an
+             ;; integer type here, confusing everything.
+             ;;
+             ;; I would fix the bug properly and submit a patch but I just cannot be bothered to
+             ;; figure out how to do that.
+             (concat (format "%s" artist) " - " (format "%s" title)))
+            (title title)
+            ((eq (emms-track-type track) 'file)
+             (track-title-from-file-name (emms-track-name track)))
+            (t (emms-track-simple-description track)))))
+
+  (setq emms-track-description-function 'my-emms-track-description)
 #+end_src
 
 ** Packages to look?
 - ace-window or something to move between windows in a better way
+
+** PY
+- you need a major mode - py is built into emacs (colors/indentation/imenu/...)
+- lsp server - pylsp
+  - eglot is a lsp client - lsp-mode is external to emacs - eglot is the supported by emacs
+- Add with less packages and only add if needed
+ 
+** AI 
+- gptel - it's mature 
+
+** look crdt - for pairing 
