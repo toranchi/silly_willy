@@ -1,3 +1,5 @@
 
 * Links
 ** [[https://github.com/MooersLab][https://github.com/MooersLab]] emacs and biochemistry
+** https://www.adventuresinwhy.com/post/eglot/ eglot setup
+** 

@@ -1,0 +1,41 @@
+#+title: Python set up
+#+author: とランチとランチ
+#+email: toranchitoranchi@gmail.com
+#+language: en
+#+options: \n:t ^:nil
+#+property: header-args :tangle "init.el"
+#+startup: content indent
+
+* Python Setup Instructions
+** Wanted features
+- work with a lsp (eglot)
+- jump to def (=M-.=)
+- linting / reformat (ruff: https://github.com/astral-sh/ruff)
+- docs access (eldoc)
+- completion with Corfu: https://github.com/minad/corfu
+* Creating a venv and installing all packages that will be needed
+#+begin_src bash
+  #!/bin/bash
+  set -ex  # Enable verbose mode and exit on error
+
+  # Check if an argument is provided
+  if [ -z "$1" ]; then
+      echo "Error: Missing required argument."
+      echo "Usage: $0 <venv_name>"
+      exit 1
+  fi
+
+  ARG="$1"
+
+  echo "creating venv: $ARG"
+
+  # assumption that mkvirtualenv is installed already: https://virtualenvwrapper.readthedocs.io/en/latest/command_ref.html
+  mkvirtualenv $ARG
+  workon $ARG
+
+  # install the required pips in the venv
+  pip install poetry
+  pip install pyright ruff
+
+  echo "Script finished successfully."
+#+end_src

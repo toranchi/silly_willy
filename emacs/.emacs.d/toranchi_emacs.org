@@ -111,11 +111,36 @@ When set to a number in a list, try to get the width from any
 #+END_QUOTE
 
 #+begin_src emacs-lisp
+;; Modified from Prot: https://protesilaos.com/codelog/2025-01-16-emacs-org-todo-agenda-basics/
+;; These are the defaults we want to change.  We do so in the
+;; following `use-package' declaration.
+;; (setq org-M-RET-may-split-line '((default . t)))
+;; (setq org-insert-heading-respect-content nil)
+;; (setq org-log-done nil)
+;; (setq org-log-into-drawer nil)
+
+
+(use-package org
+  :ensure nil ; do not try to install it as it is built-in
+  :config
+  (setq org-M-RET-may-split-line '((default . nil)))
+  (setq org-insert-heading-respect-content t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+
   ;; permit the use or #+ATTR_ORG: :width
   (setq org-image-actual-width nil)
+  ;; show images always
+  (setq org-startup-with-inline-images t)
 
+  (setq org-directory "~/org/agenda")
+  (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+
+  ;; Learn about the ! and more by reading the relevant section of the
+  ;; Org manual.  Evaluate: (info "(org) Tracking TODO state changes")
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)"))))
 #+end_src
-
 
 ** Emacs package
 The following configs were suggested by vertico docs
@@ -130,6 +155,8 @@ The following configs were suggested by vertico docs
     ;; Vertico.
     (read-extended-command-predicate #'command-completion-default-include-p)
     :init
+    ;; set a larger fringe
+    (fringe-mode 12)
     ;; Add prompt indicator to `completing-read-multiple'.
     ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
     (defun crm-indicator (args)
@@ -147,7 +174,6 @@ The following configs were suggested by vertico docs
     (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
 #+end_src
 ** Theming
-
 #+begin_src emacs-lisp
   ;; set theme colors
   (use-package spacemacs-theme
@@ -200,7 +226,13 @@ Add rainbow delimiters cause ((((()))))
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters 
     :ensure t
-    :config (rainbow-delimiters-mode 1))
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+*** Line mode global
+#+begin_src emacs-lisp
+  ;; show numberlines everywhere
+  (global-display-line-numbers-mode t)
 #+end_src
 
 *** Delsel
@@ -286,6 +318,21 @@ Set nerd fonts to be used in a few places
     :ensure t
     :hook
     (dired-mode . nerd-icons-dired-mode))
+#+end_src
+
+*** Isearch behavior
+Taken from: https://protesilaos.com/codelog/2023-06-10-emacs-search-replace-basics/
+#+begin_src emacs-lisp
+;; Display a counter showing the number of the current and the other
+;; matches.  Place it before the prompt, though it can be after it.
+(setq isearch-lazy-count t)
+(setq lazy-count-prefix-format "(%s/%s) ")
+(setq lazy-count-suffix-format nil)
+
+;; Make regular Isearch interpret the empty space as a regular
+;; expression that matches any character between the words you give
+;; it.
+(setq search-whitespace-regexp ".*?")
 #+end_src
 
 ** Minibuffer setup
@@ -415,6 +462,33 @@ overrides the default specified in ‘completion-category-defaults’.
 
 
 
+*  Dashboard
+whatchout that having the configs under :config instead of :custom causes an error with the icons, not sure why: open bug: https://github.com/emacs-dashboard/emacs-dashboard/issues/459
+#+begin_src emacs-lisp
+  ;; use-package with package.el:
+  (use-package dashboard
+    :ensure t
+    :config
+    (dashboard-setup-startup-hook)
+    :custom
+    (dashboard-startup-banner 'logo)
+    (dashboard-banner-logo-title nil)
+    (dashboard-center-content t)
+    (dashboard-icon-type 'nerd-icons)
+    (dashboard-set-heading-icons t)
+    (dashboard-set-file-icons t)
+    (dashboard-set-footer nil)
+    (dashboard-projects-backend 'project-el)
+    (dashboard-display-icons-p t)
+    (dashboard-items '(
+                       (recents . 10)
+                       (agenda . 10)
+                       (projects . 5)
+                       (bookmarks . 10)
+                       (registers . 5)
+                       )))
+#+end_src
+
 ** EMMS
 emms smart browse help seeing the list of songs to be played
 I found this config here https://lucidmanager.org/productivity/configure-emms/
@@ -430,6 +504,7 @@ After the basic config there are a couple of helper functions to reduce the data
     (emms-all)
     (emms-default-players)
     (emms-mpris-enable)
+    (setq emms-player-list '(emms-player-vlc emms-player-mpv))
     :custom
     (emms-browser-covers #'emms-browser-cache-thumbnail-async)
     :bind
@@ -479,13 +554,80 @@ After the basic config there are a couple of helper functions to reduce the data
 ** Packages to look?
 - ace-window or something to move between windows in a better way
 
-** PY
+** Python 
 - you need a major mode - py is built into emacs (colors/indentation/imenu/...)
 - lsp server - pylsp
   - eglot is a lsp client - lsp-mode is external to emacs - eglot is the supported by emacs
 - Add with less packages and only add if needed
- 
+
+Some of the configs will continue in eglot
+  #+begin_src emacs-lisp
+    ;; Install pyenv and set the path to the venv python when activated
+    (use-package pyvenv
+      :ensure t
+      :hook (python-mode . pyvenv-mode)
+      :config
+      (setq pyvenv-post-activate-hooks
+            (list (lambda ()
+                    (setq python-shell-interpreter
+                          (concat pyvenv-virtual-env "bin/python"))))))
+
+
+    ;; trash from chatgpt
+    (defvar pyenv-mode-line-string "" "String to display pyenv version in the mode-line.")
+
+    (defun update-pyenv-mode-line ()
+      "Update the pyenv version displayed in the mode-line."
+      (setq pyenv-mode-line-string
+            (format " [pyenv: %s] " (or (getenv "PYENV_VERSION") "system")))
+      (force-mode-line-update))
+
+    (define-minor-mode pyenv-mode
+      "Minor mode to show pyenv version in the mode-line."
+      :global t
+      :lighter (:eval pyenv-mode-line-string))
+
+    ;; Enable the minor mode
+    (pyenv-mode -1)
+
+    ;; Automatically update when pyenv is changed (e.g., in shell buffers)
+    (add-hook 'post-command-hook #'update-pyenv-mode-line)
+
+  #+end_src
+
+
+  Then we want to set up ruff
+  #+begin_src emacs-lisp
+    ;; add ruff calls: requires pip install ruff
+    (use-package lazy-ruff
+      :ensure t
+      :bind (("C-c f" . lazy-ruff-lint-format-dwim)) ;; keybinding
+      :config
+      (lazy-ruff-global-mode t)) ;; Enable the lazy-ruff minor mode globally
+  #+end_src
+
+  Flymake keybinding for quick go through errors
+  #+begin_src emacs-lisp
+    (fringe-mode 12)
+    (use-package flymake
+      :ensure nil
+      :bind (:map flymake-mode-map
+              ("M-n" . flymake-goto-next-error)
+              ("M-p" . flymake-goto-prev-error)))
+  #+end_src
+  
+** eglot
+#+begin_src emacs-lisp
+  (use-package eglot
+    :ensure nil
+    :hook
+    (python-base-mode-hook . eglot-ensure))
+
+  ;; I have to test if this is really necessary, but i was getting errors
+  (setq xref-backend-functions '(eglot-xref-backend))
+#+end_src
+
 ** AI 
 - gptel - it's mature 
 
-** look crdt - for pairing 
+** look crdt - for pairing

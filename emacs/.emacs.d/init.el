@@ -1,11 +1,69 @@
 ;; use-package is available from 29+ otherwise (package-install 'use-package)
 (require 'package) ;; this always get the latest version (elpaca builds from git and helps with versioning)
   (package-initialize)
-
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
+;; move the changed provided from customize to a separate file from init.el
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file :no-error-if-file-is-missing)
+
+;; Modified from Prot: https://protesilaos.com/codelog/2025-01-16-emacs-org-todo-agenda-basics/
+;; These are the defaults we want to change.  We do so in the
+;; following `use-package' declaration.
+;; (setq org-M-RET-may-split-line '((default . t)))
+;; (setq org-insert-heading-respect-content nil)
+;; (setq org-log-done nil)
+;; (setq org-log-into-drawer nil)
+
+
+(use-package org
+  :ensure nil ; do not try to install it as it is built-in
+  :config
+  (setq org-M-RET-may-split-line '((default . nil)))
+  (setq org-insert-heading-respect-content t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+
+  ;; permit the use or #+ATTR_ORG: :width
+  (setq org-image-actual-width nil)
+  ;; show images always
+  (setq org-startup-with-inline-images t)
+
+  (setq org-directory "~/org/agenda")
+  (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+
+  ;; Learn about the ! and more by reading the relevant section of the
+  ;; Org manual.  Evaluate: (info "(org) Tracking TODO state changes")
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)"))))
+
+;; A few more useful configurations...
+(use-package emacs
+  :custom
+  ;; Support opening new minibuffers from inside existing minibuffers.
+  (enable-recursive-minibuffers t)
+  ;; Hide commands in M-x which do not work in the current mode.  Vertico
+  ;; commands are hidden in normal buffers. This setting is useful beyond
+  ;; Vertico.
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  :init
+  ;; set a larger fringe
+  (fringe-mode 12)
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
 
 ;; set theme colors
 (use-package spacemacs-theme
@@ -44,7 +102,10 @@
 
 (use-package rainbow-delimiters 
   :ensure t
-  :config (rainbow-delimiters-mode 1))
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; show numberlines everywhere
+(global-display-line-numbers-mode t)
 
 ;; (use-package delsel
 ;;   :ensure nil ; no need to install it as it is built-in
@@ -100,8 +161,24 @@ The DWIM behaviour of this command is as follows:
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
+;; Display a counter showing the number of the current and the other
+;; matches.  Place it before the prompt, though it can be after it.
+(setq isearch-lazy-count t)
+(setq lazy-count-prefix-format "(%s/%s) ")
+(setq lazy-count-suffix-format nil)
+
+;; Make regular Isearch interpret the empty space as a regular
+;; expression that matches any character between the words you give
+;; it.
+(setq search-whitespace-regexp ".*?")
+
 (use-package vertico
   :ensure t
+  :custom
+     ;; (vertico-scroll-margin 0) ;; Different scroll margin
+     ;; (vertico-count 20) ;; Show more candidates
+     ;; (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+  (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
   :config (vertico-mode 1)) ;; it is a minor-mode and it enabled with 1
 
 (use-package marginalia
@@ -141,3 +218,134 @@ The DWIM behaviour of this command is as follows:
   (with-eval-after-load 'savehist
     (corfu-history-mode 1)
     (add-to-list 'savehist-additional-variables 'corfu-history)))
+
+;; use-package with package.el:
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+  :custom
+  (dashboard-startup-banner 'logo)
+  (dashboard-banner-logo-title nil)
+  (dashboard-center-content t)
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
+  (dashboard-set-footer nil)
+  (dashboard-projects-backend 'project-el)
+  (dashboard-display-icons-p t)
+  (dashboard-items '(
+                     (recents . 10)
+                     (agenda . 10)
+                     (projects . 5)
+                     (bookmarks . 10)
+                     (registers . 5)
+                     )))
+
+;; Emacs Multimedia System
+(use-package emms
+  :ensure t
+  :config
+  (require 'emms-setup)
+  (require 'emms-mpris)
+  (emms-all)
+  (emms-default-players)
+  (emms-mpris-enable)
+  (setq emms-player-list '(emms-player-vlc emms-player-mpv))
+  :custom
+  (emms-browser-covers #'emms-browser-cache-thumbnail-async)
+  :bind
+  (("C-c w m b" . emms-browser)
+   ("C-c w m e" . emms)
+   ("C-c w m p" . emms-play-playlist )
+   ("<XF86AudioPrev>" . emms-previous)
+   ("<XF86AudioNext>" . emms-next)
+   ("<XF86AudioPlay>" . emms-pause)))
+
+;; https://www.reddit.com/r/emacs/comments/qg2d0k/emms_modeline_shows_full_path_to_the_songs_i_only/
+;; EMMS puts too much garbage about the song in the modeline, this reduces it
+(defun track-title-from-file-name (file)
+  "For using with EMMS description functions. Extracts the track
+title from the file name FILE, which just means a) taking only
+the file component at the end of the path, and b) removing any
+file extension."
+  (with-temp-buffer
+    (save-excursion (insert (file-name-nondirectory (directory-file-name file))))
+    (ignore-error 'search-failed
+      (search-forward-regexp (rx "." (+ alnum) eol))
+      (delete-region (match-beginning 0) (match-end 0)))
+    (buffer-string)))
+
+(defun my-emms-track-description (track)
+  "Return a description of TRACK, for EMMS, but try to cut just
+the track name from the file name, and just use the file name too
+rather than the whole path."
+  (let ((artist (emms-track-get track 'info-artist))
+        (title (emms-track-get track 'info-title)))
+    (cond ((and artist title)
+           ;; Converting the artist/title to a string works around a bug in `emms-info-exiftool'
+           ;; where, if your track name is a number, e.g. "1999" by Jeroen Tel, then it will be an
+           ;; integer type here, confusing everything.
+           ;;
+           ;; I would fix the bug properly and submit a patch but I just cannot be bothered to
+           ;; figure out how to do that.
+           (concat (format "%s" artist) " - " (format "%s" title)))
+          (title title)
+          ((eq (emms-track-type track) 'file)
+           (track-title-from-file-name (emms-track-name track)))
+          (t (emms-track-simple-description track)))))
+
+(setq emms-track-description-function 'my-emms-track-description)
+
+;; Install pyenv and set the path to the venv python when activated
+(use-package pyvenv
+  :ensure t
+  :hook (python-mode . pyvenv-mode)
+  :config
+  (setq pyvenv-post-activate-hooks
+        (list (lambda ()
+                (setq python-shell-interpreter
+                      (concat pyvenv-virtual-env "bin/python"))))))
+
+
+;; trash from chatgpt
+(defvar pyenv-mode-line-string "" "String to display pyenv version in the mode-line.")
+
+(defun update-pyenv-mode-line ()
+  "Update the pyenv version displayed in the mode-line."
+  (setq pyenv-mode-line-string
+        (format " [pyenv: %s] " (or (getenv "PYENV_VERSION") "system")))
+  (force-mode-line-update))
+
+(define-minor-mode pyenv-mode
+  "Minor mode to show pyenv version in the mode-line."
+  :global t
+  :lighter (:eval pyenv-mode-line-string))
+
+;; Enable the minor mode
+(pyenv-mode -1)
+
+;; Automatically update when pyenv is changed (e.g., in shell buffers)
+(add-hook 'post-command-hook #'update-pyenv-mode-line)
+
+;; add ruff calls: requires pip install ruff
+(use-package lazy-ruff
+  :ensure t
+  :bind (("C-c f" . lazy-ruff-lint-format-dwim)) ;; keybinding
+  :config
+  (lazy-ruff-global-mode t)) ;; Enable the lazy-ruff minor mode globally
+
+(fringe-mode 12)
+(use-package flymake
+  :ensure nil
+  :bind (:map flymake-mode-map
+          ("M-n" . flymake-goto-next-error)
+          ("M-p" . flymake-goto-prev-error)))
+
+(use-package eglot
+  :ensure nil
+  :hook
+  (python-base-mode-hook . eglot-ensure))
+
+;; I have to test if this is really necessary, but i was getting errors
+(setq xref-backend-functions '(eglot-xref-backend))
