@@ -42,6 +42,7 @@ Since words should be left to the poets, here are the words of one of the greate
 #+END_QUOTE
 
 とランチとランチ覚えていますよ！ This was badly copied from: [[https://raw.githubusercontent.com/protesilaos/dotfiles/refs/heads/master/emacs/.emacs.d/prot-emacs.org][Prot's organized init.el and such]]
+
 - =early-init.el= gets executed before init.el, so you can put some happy things there. What? I dunno!
 - =init.el= this loads all the stuff and magic things: probably I should have it load it sub-files to keep things sort of understandable
 
@@ -140,8 +141,7 @@ When set to a number in a list, try to get the width from any
   ;; Org manual.  Evaluate: (info "(org) Tracking TODO state changes")
   (setq org-todo-keywords
         '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)"))))
-#+end_src
-
+#+end
 ** Emacs package
 The following configs were suggested by vertico docs
 #+begin_src emacs-lisp
@@ -154,6 +154,7 @@ The following configs were suggested by vertico docs
     ;; commands are hidden in normal buffers. This setting is useful beyond
     ;; Vertico.
     (read-extended-command-predicate #'command-completion-default-include-p)
+
     :init
     ;; set a larger fringe
     (fringe-mode 12)
@@ -173,15 +174,36 @@ The following configs were suggested by vertico docs
           '(read-only t cursor-intangible t face minibuffer-prompt))
     (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
 #+end_src
-** Theming
+
+** Theme Configurations
+*** Set mfain theme
+
+This is the main theme to set colors and such
 #+begin_src emacs-lisp
   ;; set theme colors
-  (use-package spacemacs-theme
-    :ensure t
-    :config (load-theme 'spacemacs-dark t))
+  ;; (use-package spacemacs-theme
+  ;;   :ensure t
+  ;;   :config (load-theme 'spacemacs-dark t))
+
+  (use-package modus-themes
+      :ensure nil
+      :config (load-theme 'modus-vivendi-tinted t))
+
 #+end_src
 
-** Fonts
+*** Spacious Padding / prettier UI
+
+This is another prot package. Not sure what it does, but I like the look of the linum
+#+begin_src emacs-lisp
+  ;; give a bit of space from the sides to make things more readable
+  (use-package spacious-padding
+    :ensure t
+    :if (display-graphic-p)
+    :config
+    (spacious-padding-mode 1))
+#+end_src
+
+*** Fonts
 
 I don't understand this part and will need to talk to Prot
 #+begin_src emacs-lisp
@@ -220,6 +242,28 @@ NO IDEA WHAT THIS DOES, i need to ask to Prot
     (setq dired-subtree-use-backgrounds nil))  
 #+end_src  
 ** Helpers
+*** Flyspell / spellchecking
+
+Flyspell puts the squiggle lines under misspelled words, so you can pretend you know English
+#+begin_src emacs-lisp
+  ;; Get spellchecking everywhere
+  (use-package flyspell
+    :ensure nil
+    :hook ((text-mode . flyspell-mode)
+           (prog-mode . flyspell-prog-mode)))
+  
+#+end_src
+
+*** Which-Key / a small menu for keybinds completion
+
+This package offer a menu helper for key-bindings in case i forget them
+#+begin_src emacs-lisp
+  ;; enable helper for keybindings
+  (use-package which-key
+      :ensure nil
+      :config
+      (which-key-mode))  ;; Enable which-key mode
+ #+end_src
 
 *** Rainbow delimeters
 Add rainbow delimiters cause ((((()))))
@@ -616,7 +660,14 @@ Some of the configs will continue in eglot
               ("M-p" . flymake-goto-prev-error)))
   #+end_src
   
+** Yaml
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+  :ensure t)
+#+end_src
+
 ** eglot
+
 #+begin_src emacs-lisp
   (use-package eglot
     :ensure nil
@@ -624,10 +675,14 @@ Some of the configs will continue in eglot
     (python-base-mode-hook . eglot-ensure))
 
   ;; I have to test if this is really necessary, but i was getting errors
-  (setq xref-backend-functions '(eglot-xref-backend))
+  ;;(setq xref-backend-functions '(eglot-xref-backend))
 #+end_src
 
 ** AI 
 - gptel - it's mature 
 
 ** look crdt - for pairing
+
+* =theme_config.el= Pretty UI
+* =python_config.el= Python development
+* =emms_config.el= Music player

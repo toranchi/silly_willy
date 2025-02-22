@@ -7,68 +7,21 @@
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file :no-error-if-file-is-missing)
 
-;; Modified from Prot: https://protesilaos.com/codelog/2025-01-16-emacs-org-todo-agenda-basics/
-;; These are the defaults we want to change.  We do so in the
-;; following `use-package' declaration.
-;; (setq org-M-RET-may-split-line '((default . t)))
-;; (setq org-insert-heading-respect-content nil)
-;; (setq org-log-done nil)
-;; (setq org-log-into-drawer nil)
-
-
-(use-package org
-  :ensure nil ; do not try to install it as it is built-in
-  :config
-  (setq org-M-RET-may-split-line '((default . nil)))
-  (setq org-insert-heading-respect-content t)
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
-
-  ;; permit the use or #+ATTR_ORG: :width
-  (setq org-image-actual-width nil)
-  ;; show images always
-  (setq org-startup-with-inline-images t)
-
-  (setq org-directory "~/org/agenda")
-  (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
-
-  ;; Learn about the ! and more by reading the relevant section of the
-  ;; Org manual.  Evaluate: (info "(org) Tracking TODO state changes")
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)"))))
-
-;; A few more useful configurations...
-(use-package emacs
-  :custom
-  ;; Support opening new minibuffers from inside existing minibuffers.
-  (enable-recursive-minibuffers t)
-  ;; Hide commands in M-x which do not work in the current mode.  Vertico
-  ;; commands are hidden in normal buffers. This setting is useful beyond
-  ;; Vertico.
-  (read-extended-command-predicate #'command-completion-default-include-p)
-  :init
-  ;; set a larger fringe
-  (fringe-mode 12)
-  ;; Add prompt indicator to `completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  (defun crm-indicator (args)
-    (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
-                  (car args))
-          (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
-
 ;; set theme colors
-(use-package spacemacs-theme
+;; (use-package spacemacs-theme
+;;   :ensure t
+;;   :config (load-theme 'spacemacs-dark t))
+
+(use-package modus-themes
+    :ensure nil
+    :config (load-theme 'modus-vivendi-tinted t))
+
+;; give a bit of space from the sides to make things more readable
+(use-package spacious-padding
   :ensure t
-  :config (load-theme 'spacemacs-dark t))
+  :if (display-graphic-p)
+  :config
+  (spacious-padding-mode 1))
 
 (let ((mono-spaced-font "Monospace")
       (proportionately-spaced-font "Sans"))
@@ -99,6 +52,18 @@
     ("S-TAB" . dired-subtree-remove))
   :config
   (setq dired-subtree-use-backgrounds nil))
+
+;; Get spellchecking everywhere
+(use-package flyspell
+  :ensure nil
+  :hook ((text-mode . flyspell-mode)
+         (prog-mode . flyspell-prog-mode)))
+
+;; enable helper for keybindings
+(use-package which-key
+    :ensure nil
+    :config
+    (which-key-mode))  ;; Enable which-key mode
 
 (use-package rainbow-delimiters 
   :ensure t
@@ -348,4 +313,4 @@ rather than the whole path."
   (python-base-mode-hook . eglot-ensure))
 
 ;; I have to test if this is really necessary, but i was getting errors
-(setq xref-backend-functions '(eglot-xref-backend))
+;;(setq xref-backend-functions '(eglot-xref-backend))
