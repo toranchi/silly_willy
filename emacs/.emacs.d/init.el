@@ -7,6 +7,65 @@
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file :no-error-if-file-is-missing)
 
+;; Modified from Prot: https://protesilaos.com/codelog/2025-01-16-emacs-org-todo-agenda-basics/
+;; These are the defaults we want to change.  We do so in the
+;; following `use-package' declaration.
+;; (setq org-M-RET-may-split-line '((default . t)))
+;; (setq org-insert-heading-respect-content nil)
+;; (setq org-log-done nil)
+;; (setq org-log-into-drawer nil)
+
+
+(use-package org
+  :ensure nil ; do not try to install it as it is built-in
+  :config
+  (setq org-M-RET-may-split-line '((default . nil)))
+  (setq org-insert-heading-respect-content t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+
+  ;; permit the use or #+ATTR_ORG: :width
+  (setq org-image-actual-width nil)
+  ;; show images always
+  (setq org-startup-with-inline-images t)
+
+  (setq org-directory "~/org/agenda")
+  (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+
+  ;; Learn about the ! and more by reading the relevant section of the
+  ;; Org manual.  Evaluate: (info "(org) Tracking TODO state changes")
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)"))))
+
+;; A few more useful configurations...
+(use-package emacs
+  :custom
+  ;; Support opening new minibuffers from inside existing minibuffers.
+  (enable-recursive-minibuffers t)
+  ;; Hide commands in M-x which do not work in the current mode.  Vertico
+  ;; commands are hidden in normal buffers. This setting is useful beyond
+  ;; Vertico.
+  (read-extended-command-predicate #'command-completion-default-include-p)
+
+  :init
+  ;; set a larger fringe
+  (fringe-mode 12)
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+
 ;; set theme colors
 ;; (use-package spacemacs-theme
 ;;   :ensure t
@@ -307,6 +366,9 @@ rather than the whole path."
           ("M-n" . flymake-goto-next-error)
           ("M-p" . flymake-goto-prev-error)))
 
+(use-package yaml-mode
+:ensure t)
+
 (use-package eglot
   :ensure nil
   :hook
@@ -314,3 +376,62 @@ rather than the whole path."
 
 ;; I have to test if this is really necessary, but i was getting errors
 ;;(setq xref-backend-functions '(eglot-xref-backend))
+
+(setq modus-vivendi-tinted-palette-overrides
+        '((bg-main          "#444444") ;; main background
+          (fg-main          "#cccccc") ;; main font
+          (bg-dim           "#333333") ;; used in code section of orgmode
+          (fg-dim           "#888888") ;; subtle font like orgmode title
+          (fg-alt           yellow-intense)
+          (bg-active        "#c9b9b0")
+          (bg-inactive      "#dfd5cf")
+          (border           "#9f9690")
+
+          (keyword blue-intense)
+          (cursor magenta-intense)
+          (builtin magenta-warmer)
+          (comment fg-dim)
+          (constant blue-cooler)
+          (docstring green-faint)
+          (fnname magenta)
+          (string blue)
+          (fg-active-value yellow)
+          (Type yellow)
+          (accent-2 yellow)
+          (fg-prompt yellow)
+          (fg-prose-code yellow)
+
+          (fg-heading-0 magenta-intense) ;; orgmode title
+          (fg-heading-1 "#EE7700") ;; orgmode headings
+          (fg-heading-2 "#FFA500")
+          (fg-heading-3 "#FFDD33")
+          (fg-heading-4 "#FFCC55")
+          (fg-heading-5 "#FFEE66")
+          (fg-heading-6 "#FFFF88")
+          (fg-heading-7 "#FFFFAA")
+          (fg-heading-8 "#FFFFCC")
+
+          ;; mode line colors
+          (fg-mode-line-active fg-main)
+          (bg-mode-line-active bg-main)
+          (fg-mode-line-inactive fg-dim)
+          (bg-mode-line-inactive bg-main)
+
+          ;; line-number colors
+          (fg-line-number-active fg-main)
+          (bg-line-number-active bg-main)
+
+          ;; (fg-heading-1 "#9B0066") ;; dark intense magenta
+          ;; (fg-heading-2 "#D100B7") ;; dark magenta
+          ;; (fg-heading-3 "#E600D9") ;; vibrant magenta
+          ;; (fg-heading-4 "#F200E6") ;; bright magenta
+          ;; (fg-heading-5 "#F733F2") ;; light magenta
+          ;; (fg-heading-6 "#F985F6") ;; pale magenta
+          ;; (fg-heading-7 "#F6A8F6") ;; very pale magenta
+          ;; (fg-heading-8 "#FAD0FA") ;; extremely light magenta
+
+          (info yellow)
+          ))
+(use-package modus-themes
+     :ensure t
+     :config (load-theme 'modus-vivendi-tinted t))
