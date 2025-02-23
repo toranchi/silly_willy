@@ -55,7 +55,7 @@ Since words should be left to the poets, here are the words of one of the greate
 │   ├── some_other_stuff.el
 #+END_QUOTE
 
-* =early-init.el=
+* Customization of =early-init.el=
 #+begin_src emacs-lisp :tangle "early-init.el"
   ;; turn off the stuff I can't figure out how to use
   ;; menu-bar-mode is like some GUI menu of sort, not sure what it is for nor how to reach it
@@ -68,7 +68,7 @@ Since words should be left to the poets, here are the words of one of the greate
   (tool-bar-mode -1)
 #+end_src
 
-* =init.el=
+* Customization of =init.el=
 ** Package initialize
 #+begin_src emacs-lisp
   ;; use-package is available from 29+ otherwise (package-install 'use-package)
@@ -172,21 +172,173 @@ The following configs were suggested by vertico docs
     ;; Do not allow the cursor in the minibuffer prompt
     (setq minibuffer-prompt-properties
           '(read-only t cursor-intangible t face minibuffer-prompt))
-    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+    ;; add the line numbers for programming only
+    (add-hook 'prog-mode-hook #'display-line-numbers-mode))
 #+end_src
 
 ** Theme Configurations
 *** Set main theme
 
+
 This is the main theme to set colors and such
 #+begin_src emacs-lisp
   ;; set theme colors
   (use-package modus-themes
-      :ensure nil
-      :config (load-theme 'modus-vivendi-tinted t))
+    :ensure nil
+    :config
 
+    ;; configure the theme color and behavior
+
+    ;; set fonts constructs
+    (setq modus-themes-italic-constructs t
+  	modus-themes-bold-constructs t
+  	modus-themes-mixed-fonts t
+  	modus-themes-variable-pitch-ui t
+  	modus-themes-custom-auto-reload t
+  	modus-themes-disable-other-themes t)
+
+    ;; configure sizing of orgmode headings
+    (setq modus-themes-headings
+  	'((1 . (variable-pitch 1.3))
+  	  (2 . (1.1))
+  	  (agenda-date . (1.3))
+  	  (agenda-structure . (variable-pitch light 1.3))
+  	  (t . (1.1))))
+    
+    (setq modus-vivendi-tinted-palette-overrides
+  	'((bg-main          "#444444") ;; main background
+  	  (bg-dim           "#333333") ;; used in code section of orgmode
+            (fg-main          "#cccccc") ;; main font
+            (fg-dim           "#888888") ;; subtle font like orgmode title
+            (fg-alt           yellow-intense)
+            (bg-active        "#c9b9b0")
+            (bg-inactive      "#dfd5cf")
+            (border           "#9f9690")
+
+  	  ;; Corfu completion look
+  	  (bg-completion         "#CC5500")
+  	  (fg-completion-match-0 "#DD7700")
+  	  (fg-completion-match-1 "#DD7700")
+  	  (fg-completion-match-2 "#DD7700")
+  	  (fg-completion-match-3 "#DD7700")
+  	  (bg-completion-match-0 bg-dim)
+  	  (bg-completion-match-1 bg-dim)
+  	  (bg-completion-match-2 bg-dim)
+  	  (bg-completion-match-3 bg-dim)
+  	  
+  	  ;; nice and bright cursor
+  	  (cursor magenta-intense)
+
+  	  ;; programming colors
+  	  (keyword blue-intense)
+  	  (constant blue-cooler)
+            (builtin magenta-intense)
+            (comment fg-dim)
+  	  (string green-faint)
+  	  (docstring green-faint)
+            (fnname magenta)
+  	  (type yellow)
+  	  (variable  "#FFA500")
+
+  	  
+  	  ;; no idea what the next 5 do
+  	  (fg-active-value yellow)
+            (accent-2 yellow)
+  	  (info yellow)
+  	  
+            (fg-prompt yellow)
+            (fg-prose-code yellow)
+
+  	  ;; Orgmode
+  	  (fg-heading-0 magenta-intense) ;; orgmode title
+            (fg-heading-1 "#EE7700") ;; orgmode headings
+            (fg-heading-2 "#FFA500")
+            (fg-heading-3 "#FFDD33")
+            (fg-heading-4 "#FFCC55")
+            (fg-heading-5 "#FFEE66")
+            (fg-heading-6 "#FFFF88")
+            (fg-heading-7 "#FFFFAA")
+            (fg-heading-8 "#FFFFCC")
+            ;; (fg-heading-1 "#0077EE") ;; orgmode headings
+            ;; (fg-heading-2 "#00A5FF")
+            ;; (fg-heading-3 "#33DDFF")
+            ;; (fg-heading-4 "#44DEFF")
+            ;; (fg-heading-5 "#66EEFF")
+            ;; (fg-heading-6 "#88FFFF")
+            ;; (fg-heading-7 "#AAFFFF")
+            ;; (fg-heading-8 "#CCFFFF")
+
+  	  
+  	  ;; orgmode TODO
+  	  (prose-done fg-dim)
+  	  ;; (prose-todo "#FFA500")
+  	  ;; (prose-todo "#0077EE")
+  	  (prose-todo yellow-intense)  	  
+
+  	  ;; org blocks colors - i think these are the same as the default
+  	  (bg-prose-block-contents bg-dim)
+  	  (bg-prose-block-delimiter bg-dim)
+  	  (fg-prose-block-delimiter fg-dim)
+
+  	  ;; orgmode syntax
+  	  (bg-prose-code bg-main)
+  	  (fg-prose-code green-cooler)
+
+  	  (bg-prose-verbatim bg-main)
+  	  (fg-prose-verbatim pink)
+
+  	  (bg-prose-macro bg-dim)
+  	  (fg-prose-macro magenta-cooler)
+
+
+
+  	  (prose-tag blue-cooler)
+
+  	  ;; orgmode agenda - still to customize
+  	  (date-common cyan)   ; default value (for timestamps and more)
+  	  (date-deadline red-warmer)
+  	  (date-event magenta-warmer)
+  	  (date-holiday blue) ; for M-x calendar
+  	  (date-now yellow-warmer)
+  	  (date-scheduled magenta-cooler)
+  	  (date-weekday cyan-cooler)
+  	  (date-weekend blue-faint)
+  	  
+            ;; mode line colors
+            (fg-mode-line-active fg-main)
+            (bg-mode-line-active bg-main)
+            (fg-mode-line-inactive fg-dim)
+            (bg-mode-line-inactive bg-main)
+
+            ;; line-number colors
+            (fg-line-number-active fg-main)
+            (bg-line-number-active bg-main)
+
+  	  ;;
+  	  (fg-link blue-intense)
+  	  (bg-link bg-main)
+  	  (underline-link blue-intense)
+  	  ;; not sure what this does
+  	  ;; (bg-button-active bg-main)
+  	  ;; (fg-button-active fg-main)
+  	  ;; (bg-button-inactive bg-inactive)
+  	  ;; (fg-button-inactive "gray50")
+
+  	  ;; search
+  	  (bg-search-current "#CC5500")
+  	  (bg-search-lazy "#EE7700")
+  	  ;; (bg-search-replace yellow-intense)
+  	  ;; (bg-seach-rx-group-0 yellow-intense)
+  	  ;; (bg-seach-rx-group-1 yellow-intense)
+  	  ;; (bg-seach-rx-group-2 yellow-intense)
+  	  ;;(bg-seach-rx-group-3 yellow-intense)  	  
+  	  ))
+    
+    ;; load the theme after setting the colors
+    (load-theme 'modus-vivendi-tinted t))
 #+end_src
-
 *** Spacious Padding / prettier UI
 
 This is another prot package. Not sure what it does, but I like the look of the linum
@@ -272,7 +424,7 @@ Add rainbow delimiters cause ((((()))))
 *** Line mode global
 #+begin_src emacs-lisp
   ;; show numberlines everywhere
-  (global-display-line-numbers-mode t)
+  ;;(global-display-line-numbers-mode t)
 #+end_src
 
 *** Delsel
@@ -511,7 +663,7 @@ whatchout that having the configs under :config instead of :custom causes an err
     :config
     (dashboard-setup-startup-hook)
     :custom
-    (dashboard-startup-banner 'logo)
+    (dashboard-startup-banner "~/Pictures/logo.png")
     (dashboard-banner-logo-title nil)
     (dashboard-center-content t)
     (dashboard-icon-type 'nerd-icons)
@@ -683,65 +835,4 @@ Some of the configs will continue in eglot
 * =python_config.el= Python development
 * =emms_config.el= Music player
 
-* modus  overRides
-#+begin_src emacs-lisp
-    (setq modus-vivendi-tinted-palette-overrides
-          '((bg-main          "#444444") ;; main background
-            (fg-main          "#cccccc") ;; main font
-            (bg-dim           "#333333") ;; used in code section of orgmode
-            (fg-dim           "#888888") ;; subtle font like orgmode title
-            (fg-alt           yellow-intense)
-            (bg-active        "#c9b9b0")
-            (bg-inactive      "#dfd5cf")
-            (border           "#9f9690")
 
-            (keyword blue-intense)
-            (cursor magenta-intense)
-            (builtin magenta-warmer)
-            (comment fg-dim)
-            (constant blue-cooler)
-            (docstring green-faint)
-            (fnname magenta)
-            (string blue)
-            (fg-active-value yellow)
-            (Type yellow)
-            (accent-2 yellow)
-            (fg-prompt yellow)
-            (fg-prose-code yellow)
-
-            (fg-heading-0 magenta-intense) ;; orgmode title
-            (fg-heading-1 "#EE7700") ;; orgmode headings
-            (fg-heading-2 "#FFA500")
-            (fg-heading-3 "#FFDD33")
-            (fg-heading-4 "#FFCC55")
-            (fg-heading-5 "#FFEE66")
-            (fg-heading-6 "#FFFF88")
-            (fg-heading-7 "#FFFFAA")
-            (fg-heading-8 "#FFFFCC")
-
-            ;; mode line colors
-            (fg-mode-line-active fg-main)
-            (bg-mode-line-active bg-main)
-            (fg-mode-line-inactive fg-dim)
-            (bg-mode-line-inactive bg-main)
-
-            ;; line-number colors
-            (fg-line-number-active fg-main)
-            (bg-line-number-active bg-main)
-            
-            ;; (fg-heading-1 "#9B0066") ;; dark intense magenta
-            ;; (fg-heading-2 "#D100B7") ;; dark magenta
-            ;; (fg-heading-3 "#E600D9") ;; vibrant magenta
-            ;; (fg-heading-4 "#F200E6") ;; bright magenta
-            ;; (fg-heading-5 "#F733F2") ;; light magenta
-            ;; (fg-heading-6 "#F985F6") ;; pale magenta
-            ;; (fg-heading-7 "#F6A8F6") ;; very pale magenta
-            ;; (fg-heading-8 "#FAD0FA") ;; extremely light magenta
-
-            (info yellow)
-            ))
-  (use-package modus-themes
-       :ensure t
-       :config (load-theme 'modus-vivendi-tinted t))
-
-#+end_src
