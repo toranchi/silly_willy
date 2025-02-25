@@ -1,0 +1,1517 @@
+* Theme Configurations Nord
+** Set main
+theme
+
+
+This is the main theme to set colors and such
+#+begin_src emacs-lisp
+  ;; set theme colors
+  (use-package modus-themes
+    :ensure nil
+    :config
+
+    ;; configure the theme color and behavior
+
+    ;; set fonts constructs
+    (setq modus-themes-italic-constructs t
+          modus-themes-bold-constructs t
+          modus-themes-mixed-fonts t
+          modus-themes-variable-pitch-ui t
+          modus-themes-custom-auto-reload t
+          modus-themes-disable-other-themes t)
+
+    ;; configure sizing of orgmode headings
+    (setq modus-themes-headings
+          '((1 . (variable-pitch 1.3))
+            (2 . (1.1))
+            (agenda-date . (1.3))
+            (agenda-structure . (variable-pitch light 1.3))
+            (t . (1.1))))
+  
+    (setq modus-vivendi-tinted-palette-overrides
+          '(
+
+  ;;; Basic values
+
+            (bg-main          "#2E3440")  ;; Nord 0: Polar Night
+            (bg-dim           "#3B4252")  ;; Nord 1: Polar Night Dim
+            (fg-main          "#D8DEE9")  ;; Nord 4: Snow Storm
+            (fg-dim           "#E5E9F0")  ;; Nord 5: Snow Storm Light
+            (fg-alt           "#88C0D0")  ;; Nord 6: Frost
+            (bg-active        "#434C5E")  ;; Nord 2: Polar Night Active
+            (bg-inactive      "#2E3440")  ;; Nord 0: Polar Night
+            (border           "#434C5E")  ;; Nord 2: Polar Night Active
+
+  ;;; Common accent foregrounds
+
+            (red             "#BF616A")  ;; Nord 11: Red
+            (green           "#A3BE8C")  ;; Nord 12: Green
+            (yellow          "#EBCB8B")  ;; Nord 13: Yellow
+            (blue            "#5E81AC")  ;; Nord 14: Blue
+            (magenta         "#B48EAD")  ;; Nord 15: Magenta
+            (cyan            "#88C0D0")  ;; Nord 16: Frost
+
+  ;;; Uncommon accent foregrounds
+
+            (rust            "#BF616A")  ;; Nord 11: Red
+            (gold            "#EBCB8B")  ;; Nord 13: Yellow
+            (olive           "#A3BE8C")  ;; Nord 12: Green
+            (slate           "#5E81AC")  ;; Nord 14: Blue
+            (indigo          "#B48EAD")  ;; Nord 15: Magenta
+            (maroon          "#BF616A")  ;; Nord 11: Red
+            (pink            "#B48EAD")  ;; Nord 15: Magenta
+
+  ;;; Common accent backgrounds
+
+            (bg-red-intense     "#BF616A")  ;; Nord 11: Red
+            (bg-green-intense   "#A3BE8C")  ;; Nord 12: Green
+            (bg-yellow-intense  "#EBCB8B")  ;; Nord 13: Yellow
+            (bg-blue-intense    "#5E81AC")  ;; Nord 14: Blue
+            (bg-magenta-intense "#B48EAD")  ;; Nord 15: Magenta
+            (bg-cyan-intense    "#88C0D0")  ;; Nord 16: Frost
+
+            (bg-red-subtle      "#BF616A")  ;; Nord 11: Red
+            (bg-green-subtle    "#A3BE8C")  ;; Nord 12: Green
+            (bg-yellow-subtle   "#EBCB8B")  ;; Nord 13: Yellow
+            (bg-blue-subtle     "#5E81AC")  ;; Nord 14: Blue
+            (bg-magenta-subtle  "#B48EAD")  ;; Nord 15: Magenta
+            (bg-cyan-subtle     "#88C0D0")  ;; Nord 16: Frost
+
+  ;;; Uncommon accent background and foreground pairs
+
+            (bg-clay     "#BF616A")  ;; Nord 11: Red
+            (fg-clay     "#D8DEE9")  ;; Nord 4: Snow Storm
+
+            (bg-ochre    "#EBCB8B")  ;; Nord 13: Yellow
+            (fg-ochre    "#D8DEE9")  ;; Nord 4: Snow Storm
+
+            (bg-lavender "#B48EAD")  ;; Nord 15: Magenta
+            (fg-lavender "#D8DEE9")  ;; Nord 4: Snow Storm
+
+            (bg-sage     "#A3BE8C")  ;; Nord 12: Green
+            (fg-sage     "#D8DEE9")  ;; Nord 4: Snow Storm
+
+  ;;; Graphs
+
+            (bg-graph-red-0     "#BF616A")  ;; Nord 11: Red
+            (bg-graph-green-0   "#A3BE8C")  ;; Nord 12: Green
+            (bg-graph-yellow-0  "#EBCB8B")  ;; Nord 13: Yellow
+            (bg-graph-blue-0    "#5E81AC")  ;; Nord 14: Blue
+            (bg-graph-magenta-0 "#B48EAD")  ;; Nord 15: Magenta
+            (bg-graph-cyan-0    "#88C0D0")  ;; Nord 16: Frost
+
+  ;;; Special purpose
+
+            (bg-completion       "#434C5E")  ;; Nord 2: Polar Night Active
+            (bg-hover            "#434C5E")  ;; Nord 2: Polar Night Active
+            (bg-hl-line          "#3B4252")  ;; Nord 1: Polar Night Dim
+            (bg-region           "#3B4252")  ;; Nord 1: Polar Night Dim
+            (fg-region           "#D8DEE9")  ;; Nord 4: Snow Storm
+
+            (bg-char-0 "#5E81AC")  ;; Nord 14: Blue
+            (bg-char-1 "#B48EAD")  ;; Nord 15: Magenta
+            (bg-char-2 "#A3BE8C")  ;; Nord 12: Green
+
+            (bg-mode-line-active        "#434C5E")  ;; Nord 2: Polar Night Active
+            (fg-mode-line-active        "#D8DEE9")  ;; Nord 4: Snow Storm
+            (border-mode-line-active    "#434C5E")  ;; Nord 2: Polar Night Active
+            (bg-mode-line-inactive      "#2E3440")  ;; Nord 0: Polar Night
+            (fg-mode-line-inactive      "#E5E9F0")  ;; Nord 5: Snow Storm Light
+            (border-mode-line-inactive  "#434C5E")  ;; Nord 2: Polar Night Active
+
+            (modeline-err     "#BF616A")  ;; Nord 11: Red
+            (modeline-warning "#EBCB8B")  ;; Nord 13: Yellow
+            (modeline-info    "#88C0D0")  ;; Nord 16: Frost
+
+            (bg-tab-bar      "#2E3440")  ;; Nord 0: Polar Night
+            (bg-tab-current  "#3B4252")  ;; Nord 1: Polar Night Dim
+            (bg-tab-other    "#434C5E")  ;; Nord 2: Polar Night Active
+
+  ;;; Diffs
+
+            (bg-added           "#A3BE8C")  ;; Nord 12: Green
+            (bg-changed         "#EBCB8B")  ;; Nord 13: Yellow
+            (bg-removed         "#BF616A")  ;; Nord 11: Red
+            (bg-diff-context    "#3B4252")  ;; Nord 1: Polar Night Dim
+
+  ;;; Paren match
+
+            (bg-paren-match        "#434C5E")  ;; Nord 2: Polar Night Active
+            (fg-paren-match        "#D8DEE9")  ;; Nord 4: Snow Storm
+            (bg-paren-expression   "#3B4252")  ;; Nord 1: Polar Night Dim
+
+  ;;; Mappings
+
+  ;;;; General mappings
+
+            (fringe bg-dim)
+            (cursor magenta-intense)
+
+            (keybind magenta-cooler)
+            (name magenta)
+            (identifier yellow-faint)
+
+            (err red)
+            (warning yellow-warmer)
+            (info cyan-cooler)
+
+            (underline-err red-intense)
+            (underline-warning yellow)
+            (underline-note cyan)
+
+            (bg-prominent-err bg-red-intense)
+            (fg-prominent-err fg-main)
+            (bg-prominent-warning bg-yellow-intense)
+            (fg-prominent-warning fg-main)
+            (bg-prominent-note bg-cyan-intense)
+            (fg-prominent-note fg-main)
+
+            (bg-active-argument bg-yellow-nuanced)
+            (fg-active-argument yellow-cooler)
+            (bg-active-value bg-cyan-nuanced)
+            (fg-active-value cyan-cooler)
+
+  ;;;; Code mappings
+
+            (bracket fg-main)
+            (builtin magenta-warmer)
+            (comment red-faint)
+            (constant blue-cooler)
+            (delimiter fg-main)
+            (docmarkup magenta-faint)
+            (docstring cyan-faint)
+            (fnname magenta)
+            (keyword magenta-cooler)
+            (number fg-main)
+            (operator fg-main)
+            (preprocessor red-cooler)
+            (punctuation fg-main)
+            (rx-backslash magenta)
+            (rx-construct green-cooler)
+            (string blue-warmer)
+            (type cyan-cooler)
+            (variable cyan)
+
+  ;;;; Accent mappings
+
+            (accent-0 blue-cooler)
+            (accent-1 magenta-warmer)
+            (accent-2 cyan-cooler)
+            (accent-3 yellow)
+
+  ;;;; Button mappings
+
+            (fg-button-active fg-main)
+            (fg-button-inactive fg-dim)
+            (bg-button-active bg-active)
+            (bg-button-inactive bg-dim)
+
+  ;;;; Completion mappings
+
+            (fg-completion-match-0 blue-cooler)
+            (fg-completion-match-1 magenta-warmer)
+            (fg-completion-match-2 cyan-cooler)
+            (fg-completion-match-3 yellow)
+            (bg-completion-match-0 unspecified)
+            (bg-completion-match-1 unspecified)
+            (bg-completion-match-2 unspecified)
+            (bg-completion-match-3 unspecified)
+
+  ;;;; Date mappings
+
+            (date-common cyan)
+            (date-deadline red-cooler)
+            (date-deadline-subtle red-faint)
+            (date-event fg-alt)
+            (date-holiday magenta-warmer)
+            (date-holiday-other blue)
+            (date-now fg-main)
+            (date-range fg-alt)
+            (date-scheduled yellow-cooler)
+            (date-scheduled-subtle yellow-faint)
+            (date-weekday cyan)
+            (date-weekend magenta)
+
+  ;;;; Line number mappings
+
+            (fg-line-number-inactive fg-dim)
+            (fg-line-number-active fg-main)
+
+
+            ))
+  
+    ;; load the theme after setting the colors
+    (load-theme 'modus-vivendi-tinted t))
+#+end_src
+* Theme Configurations Solarized
+** Set main
+theme
+
+
+This is the main theme to set colors and such
+#+begin_src emacs-lisp
+              ;; set theme colors
+              (use-package modus-themes
+                :ensure nil
+                :config
+
+                ;; configure the theme color and behavior
+
+                ;; set fonts constructs
+                (setq modus-themes-italic-constructs t
+                    modus-themes-bold-constructs t
+                    modus-themes-mixed-fonts t
+                    modus-themes-variable-pitch-ui t
+                    modus-themes-custom-auto-reload t
+                    modus-themes-disable-other-themes t)
+
+                ;; configure sizing of orgmode headings
+                (setq modus-themes-headings
+                    '((1 . (variable-pitch 1.3))
+                      (2 . (1.1))
+                      (agenda-date . (1.3))
+                      (agenda-structure . (variable-pitch light 1.3))
+                      (t . (1.1))))
+    
+                (setq modus-vivendi-tinted-palette-overrides
+                    '(
+        ;;; Basic values
+
+              (bg-main          "#002B36")  ;; Solarized Dark Background
+              (bg-dim           "#073642")  ;; Solarized Dark Dim Background
+              (fg-main          "#FDF6E3")  ;; Solarized Dark Foreground
+              (fg-dim           "#93A1A1")  ;; Solarized Dark Dim Foreground
+              (fg-alt           "#B58900")  ;; Solarized Yellow
+              (bg-active        "#586E75")  ;; Solarized Dark Active Background
+              (bg-inactive      "#002B36")  ;; Solarized Dark Inactive Background
+              (border           "#586E75")  ;; Solarized Dark Border
+
+        ;;; Common accent foregrounds
+
+              (red             "#DC322F")  ;; Solarized Red
+              (green           "#859900")  ;; Solarized Green
+              (yellow          "#B58900")  ;; Solarized Yellow
+              (blue            "#268BD2")  ;; Solarized Blue
+              (magenta         "#D33682")  ;; Solarized Magenta
+              (cyan            "#2AA198")  ;; Solarized Cyan
+
+        ;;; Uncommon accent foregrounds
+
+              (rust            "#DC322F")  ;; Solarized Red
+              (gold            "#B58900")  ;; Solarized Yellow
+              (olive           "#859900")  ;; Solarized Green
+              (slate           "#268BD2")  ;; Solarized Blue
+              (indigo          "#D33682")  ;; Solarized Magenta
+              (maroon          "#DC322F")  ;; Solarized Red
+              (pink            "#D33682")  ;; Solarized Magenta
+
+        ;;; Common accent backgrounds
+
+              (bg-red-intense     "#DC322F")  ;; Solarized Red
+              (bg-green-intense   "#859900")  ;; Solarized Green
+              (bg-yellow-intense  "#B58900")  ;; Solarized Yellow
+              (bg-blue-intense    "#268BD2")  ;; Solarized Blue
+              (bg-magenta-intense "#D33682")  ;; Solarized Magenta
+              (bg-cyan-intense    "#2AA198")  ;; Solarized Cyan
+
+              (bg-red-subtle      "#DC322F")  ;; Solarized Red
+              (bg-green-subtle    "#859900")  ;; Solarized Green
+              (bg-yellow-subtle   "#B58900")  ;; Solarized Yellow
+              (bg-blue-subtle     "#268BD2")  ;; Solarized Blue
+              (bg-magenta-subtle  "#D33682")  ;; Solarized Magenta
+              (bg-cyan-subtle     "#2AA198")  ;; Solarized Cyan
+
+        ;;; Uncommon accent background and foreground pairs
+
+              (bg-clay     "#DC322F")  ;; Solarized Red
+              (fg-clay     "#FDF6E3")  ;; Solarized Light Foreground
+
+              (bg-ochre    "#B58900")  ;; Solarized Yellow
+              (fg-ochre    "#FDF6E3")  ;; Solarized Light Foreground
+
+              (bg-lavender "#D33682")  ;; Solarized Magenta
+              (fg-lavender "#FDF6E3")  ;; Solarized Light Foreground
+
+              (bg-sage     "#859900")  ;; Solarized Green
+              (fg-sage     "#FDF6E3")  ;; Solarized Light Foreground
+
+        ;;; Graphs
+
+              (bg-graph-red-0     "#DC322F")  ;; Solarized Red
+              (bg-graph-green-0   "#859900")  ;; Solarized Green
+              (bg-graph-yellow-0  "#B58900")  ;; Solarized Yellow
+              (bg-graph-blue-0    "#268BD2")  ;; Solarized Blue
+              (bg-graph-magenta-0 "#D33682")  ;; Solarized Magenta
+              (bg-graph-cyan-0    "#2AA198")  ;; Solarized Cyan
+
+        ;;; Special purpose
+
+              (bg-completion       "#586E75")  ;; Solarized Dark Active Background
+              (bg-hover            "#586E75")  ;; Solarized Dark Active Background
+              (bg-hl-line          "#073642")  ;; Solarized Dark Dim Background
+              (bg-region           "#073642")  ;; Solarized Dark Dim Background
+              (fg-region           "#FDF6E3")  ;; Solarized Light Foreground
+
+              (bg-char-0 "#268BD2")  ;; Solarized Blue
+              (bg-char-1 "#D33682")  ;; Solarized Magenta
+              (bg-char-2 "#859900")  ;; Solarized Green
+
+              (bg-mode-line-active        "#586E75")  ;; Solarized Dark Active Background
+              (fg-mode-line-active        "#FDF6E3")  ;; Solarized Light Foreground
+              (border-mode-line-active    "#586E75")  ;; Solarized Dark Active Background
+              (bg-mode-line-inactive      "#002B36")  ;; Solarized Dark Background
+              (fg-mode-line-inactive      "#93A1A1")  ;; Solarized Dim Foreground
+              (border-mode-line-inactive  "#586E75")  ;; Solarized Dark Active Background
+
+              (modeline-err     "#DC322F")  ;; Solarized Red
+              (modeline-warning "#B58900")  ;; Solarized Yellow
+              (modeline-info    "#2AA198")  ;; Solarized Cyan
+
+              (bg-tab-bar      "#002B36")  ;; Solarized Dark Background
+              (bg-tab-current  "#073642")  ;; Solarized Dark Dim Background
+              (bg-tab-other    "#586E75")  ;; Solarized Dark Active Background
+
+        ;;; Diffs
+
+              (bg-added           "#859900")  ;; Solarized Green
+              (bg-changed         "#B58900")  ;; Solarized Yellow
+              (bg-removed         "#DC322F")  ;; Solarized Red
+              (bg-diff-context    "#073642")  ;; Solarized Dark Dim Background
+
+        ;;; Paren match
+
+              (bg-paren-match        "#586E75")  ;; Solarized Dark Active Background
+              (fg-paren-match        "#FDF6E3")  ;; Solarized Light Foreground
+              (bg-paren-expression   "#073642")  ;; Solarized Dark Dim Background
+
+        ;;; Mappings
+
+        ;;;; General mappings
+
+              (fringe bg-dim)
+              (cursor magenta-intense)
+
+              (keybind magenta-cooler)
+              (name magenta)
+              (identifier yellow-faint)
+
+              (err red)
+              (warning yellow-warmer)
+              (info cyan-cooler)
+
+              (underline-err red-intense)
+              (underline-warning yellow)
+              (underline-note cyan)
+
+              (bg-prominent-err bg-red-intense)
+              (fg-prominent-err fg-main)
+              (bg-prominent-warning bg-yellow-intense)
+              (fg-prominent-warning fg-main)
+              (bg-prominent-note bg-cyan-intense)
+              (fg-prominent-note fg-main)
+
+              (bg-active-argument bg-yellow-nuanced)
+              (fg-active-argument yellow-cooler)
+              (bg-active-value bg-cyan-nuanced)
+              (fg-active-value cyan-cooler)
+
+        ;;;; Code mappings
+
+              (bracket fg-main)
+              (builtin magenta-warmer)
+              (comment red-faint)
+              (constant blue-cooler)
+              (delimiter fg-main)
+              (docmarkup magenta-faint)
+              (docstring cyan-faint)
+              (fnname magenta)
+              (keyword magenta-cooler)
+              (number fg-main)
+              (operator fg-main)
+              (preprocessor red-cooler)
+              (punctuation fg-main)
+              (rx-backslash magenta)
+              (rx-construct green-cooler)
+              (string blue-warmer)
+              (type cyan-cooler)
+              (variable cyan)
+
+        ;;;; Accent mappings
+
+              (accent-0 blue-cooler)
+              (accent-1 magenta-warmer)
+              (accent-2 cyan-cooler)
+              (accent-3 yellow)
+
+        ;;;; Button mappings
+
+              (fg-button-active fg-main)
+              (fg-button-inactive fg-dim)
+              (bg-button-active bg-active)
+              (bg-button-inactive bg-dim)
+
+        ;;;; Completion mappings
+
+              (fg-completion-match-0 blue-cooler)
+              (fg-completion-match-1 magenta-warmer)
+              (fg-completion-match-2 cyan-cooler)
+              (fg-completion-match-3 yellow)
+              (bg-completion-match-0 unspecified)
+              (bg-completion-match-1 unspecified)
+              (bg-completion-match-2 unspecified)
+              (bg-completion-match-3 unspecified)
+
+        ;;;; Date mappings
+
+              (date-common cyan)
+              (date-deadline red-cooler)
+              (date-deadline-subtle red-faint)
+              (date-event fg-alt)
+              (date-holiday magenta-warmer)
+              (date-holiday-other blue)
+              (date-now fg-main)
+              (date-range fg-alt)
+              (date-scheduled yellow-cooler)
+              (date-scheduled-subtle yellow-faint)
+              (date-weekday cyan)
+              (date-weekend magenta)
+
+        ;;;; Line number mappings
+
+              (fg-line-number-inactive fg-dim)
+              (fg-line-number-active fg-main)
+
+              ))
+    
+                ;; load the theme after setting the colors
+                (load-theme 'modus-vivendi-tinted t))
+#+end_src
+* Theme Configurations Solarized light
+** Set main
+theme
+
+
+This is the main theme to set colors and such
+#+begin_src emacs-lisp
+  ;; set theme colors
+  (use-package modus-themes
+    :ensure nil
+    :config
+
+    ;; configure the theme color and behavior
+
+    ;; set fonts constructs
+    (setq modus-themes-italic-constructs t
+	  modus-themes-bold-constructs t
+	  modus-themes-mixed-fonts t
+	  modus-themes-variable-pitch-ui t
+	  modus-themes-custom-auto-reload t
+	  modus-themes-disable-other-themes t)
+
+    ;; configure sizing of orgmode headings
+    (setq modus-themes-headings
+	  '((1 . (variable-pitch 1.3))
+	    (2 . (1.1))
+	    (agenda-date . (1.3))
+	    (agenda-structure . (variable-pitch light 1.3))
+	    (t . (1.1))))
+  
+    (setq modus-vivendi-tinted-palette-overrides
+	  '(
+  ;;; Solarized Light Theme
+
+  ;;; Basic Values
+	    (bg-main          "#FDF6E3") ;; Light background
+	    (bg-dim           "#EEE8D5") ;; Slightly darker light background
+	    (fg-main          "#657B83") ;; Dark greyish text
+	    (fg-dim           "#93A1A1") ;; Light grey text
+	    (fg-alt           "#268BD2") ;; Accent color (blue)
+	    (bg-active        "#D3D7CF") ;; Active background (light)
+	    (bg-inactive      "#F5F5F5") ;; Inactive background (light)
+	    (border           "#93A1A1") ;; Border color
+
+  ;;; Common Accent Foregrounds
+	    (red             "#DC322F") ;; Red
+	    (green           "#859900") ;; Green
+	    (yellow          "#B58900") ;; Yellow
+	    (blue            "#268BD2") ;; Blue
+	    (magenta         "#D33682") ;; Magenta
+	    (cyan            "#2AA198") ;; Cyan
+	    (white           "#FDF6E3") ;; White (background)
+	    (bg-highlight    "#93A1A1") ;; Background highlight
+
+  ;;; Uncommon Accent Foregrounds
+	    (rust            "#B65C2D") ;; Rust color
+	    (gold            "#B8860B") ;; Gold color
+	    (olive           "#6E7C47") ;; Olive color
+	    (slate           "#657B83") ;; Slate color
+
+  ;;; Common Accent Backgrounds
+	    (bg-red-intense     "#DC322F") ;; Red intense background
+	    (bg-green-intense   "#859900") ;; Green intense background
+	    (bg-yellow-intense  "#B58900") ;; Yellow intense background
+	    (bg-blue-intense    "#268BD2") ;; Blue intense background
+	    (bg-magenta-intense "#D33682") ;; Magenta intense background
+	    (bg-cyan-intense    "#2AA198") ;; Cyan intense background
+
+  ;;; Uncommon Accent Backgrounds
+	    (bg-clay     "#B65C2D") ;; Clay accent background
+	    (bg-ochre    "#B8860B") ;; Ochre accent background
+	    (bg-lavender "#6E7C47") ;; Lavender accent background
+
+  ;;; Special Purpose
+	    (bg-completion       "#D3D7CF") ;; Completion background
+	    (bg-hover            "#B58900") ;; Hover background
+	    (bg-hover-secondary  "#268BD2") ;; Secondary hover background
+	    (bg-hl-line          "#F1E2C7") ;; Highlight line background
+	    (bg-region           "#93A1A1") ;; Region background
+	    (fg-region           "#FDF6E3") ;; Region foreground
+
+  ;;; Mode Settings
+            (bg-mode-line-active        bg-main)  ;; Darker Gray
+            (fg-mode-line-active        fg-main)  ;; Off-white
+            (border-mode-line-active    bg-main)  ;; Darker Gray
+            (bg-mode-line-inactive      bg-main)  ;; Dark Gray
+            (fg-mode-line-inactive      fg-dim)  ;; Light Gray
+            (border-mode-line-inactive  bg-main)  ;; Darker Gray
+
+  ;;; Mappings
+	    (fringe            bg-dim)    ;; Fringe
+	    (cursor            fg-main)   ;; Cursor
+	    (keybind           fg-alt)    ;; Keybind color
+	    (name              fg-main)   ;; Name color
+	    (identifier        fg-alt)    ;; Identifier color
+	    (err               red)       ;; Error
+	    (warning           yellow)    ;; Warning
+	    (info              cyan)      ;; Info
+	    (underline-err     red)       ;; Underline for errors
+	    (underline-warning yellow)    ;; Underline for warnings
+	    (underline-note    cyan)      ;; Underline for notes
+
+  ;;; Code Mappings
+	    (bracket           fg-main)   ;; Bracket
+	    (builtin           magenta)   ;; Built-in functions
+	    (comment           fg-dim)    ;; Comment text
+	    (constant          blue)      ;; Constant text
+	    (delimiter         fg-main)   ;; Delimiters
+	    (docmarkup         fg-alt)    ;; Documentation markup
+	    (docstring         cyan)      ;; Docstring
+	    (fnname            magenta)   ;; Function names
+	    (keyword           blue)      ;; Keywords
+	    (number            fg-main)   ;; Numbers
+	    (operator          fg-main)   ;; Operators
+	    (preprocessor      red)       ;; Preprocessor directives
+	    (punctuation       fg-main)   ;; Punctuation marks
+	    (rx-backslash      magenta)   ;; Regex backslashes
+	    (rx-construct      green)     ;; Regex constructs
+	    (string            blue)      ;; Strings
+	    (type              cyan)      ;; Types
+	    (variable          fg-alt)    ;; Variables
+
+  ;;; Button Mappings
+	    (fg-button-active  fg-main)   ;; Active button text
+	    (fg-button-inactive fg-dim)   ;; Inactive button text
+	    (bg-button-active  bg-active) ;; Active button background
+	    (bg-button-inactive bg-inactive) ;; Inactive button background
+
+  ;;; Line Number Mappings
+	    (fg-line-number-inactive fg-dim) ;; Inactive line number text
+	    (fg-line-number-active   fg-main) ;; Active line number text
+	    (bg-line-number-inactive bg-dim)  ;; Inactive line number background
+	    (bg-line-number-active   bg-active) ;; Active line number background
+
+  ;;; Link Mappings
+	    (fg-link             blue)     ;; Link foreground
+	    (bg-link             unspecified)  ;; Link background
+	    (underline-link      blue)     ;; Underlined links
+
+  ;;; Search Mappings
+	    (bg-search-current   yellow)    ;; Current search highlight
+	    (bg-search-lazy      cyan)      ;; Lazy search highlight
+	    (bg-search-replace   red)       ;; Replace search highlight
+
+  ;;; Terminal Mappings
+	    (bg-term-black       "#000000") ;; Terminal black
+	    (fg-term-black       "#000000") ;; Terminal black text
+	    (bg-term-red         red)       ;; Terminal red
+	    (fg-term-red         red)       ;; Terminal red text
+	    (bg-term-green       green)     ;; Terminal green
+	    (fg-term-green       green)     ;; Terminal green text
+	    (bg-term-yellow      yellow)    ;; Terminal yellow
+	    (fg-term-yellow      yellow)    ;; Terminal yellow text
+	    (bg-term-blue        blue)      ;; Terminal blue
+	    (fg-term-blue        blue)      ;; Terminal blue text
+	    (bg-term-magenta     magenta)   ;; Terminal magenta
+	    (fg-term-magenta     magenta)   ;; Terminal magenta text
+	    (bg-term-cyan        cyan)      ;; Terminal cyan
+	    (fg-term-cyan        cyan)      ;; Terminal cyan text
+	    (bg-term-white       "#FDF6E3") ;; Terminal white
+	    (fg-term-white       "#FDF6E3") ;; Terminal white text
+	    ))
+  
+    ;; load the theme after setting the colors
+    (load-theme 'modus-vivendi-tinted t))
+#+end_src
+* Theme Configurations Chatgpt
+** Set main
+theme
+
+
+This is the main theme to set colors and such
+#+begin_src emacs-lisp
+  ;; set theme colors
+  (use-package modus-themes
+    :ensure nil
+    :config
+
+    ;; configure the theme color and behavior
+
+    ;; set fonts constructs
+    (setq modus-themes-italic-constructs t
+          modus-themes-bold-constructs t
+          modus-themes-mixed-fonts t
+          modus-themes-variable-pitch-ui t
+          modus-themes-custom-auto-reload t
+          modus-themes-disable-other-themes t)
+
+    ;; configure sizing of orgmode headings
+    (setq modus-themes-headings
+          '((1 . (variable-pitch 1.3))
+            (2 . (1.1))
+            (agenda-date . (1.3))
+            (agenda-structure . (variable-pitch light 1.3))
+            (t . (1.1))))
+
+    (setq modus-vivendi-tinted-palette-overrides
+          '(
+  ;;; Basic values
+
+            (bg-main          "#282828")  ;; Dark Gray
+            (bg-dim           "#3C3C3C")  ;; Dim Gray
+            (fg-main          "#F8F8F2")  ;; Off-white
+            (fg-dim           "#B0B0B0")  ;; Light Gray
+            (fg-alt           "#FFA500")  ;; Orange
+            (bg-active        "#4E4E4E")  ;; Darker Gray
+            (bg-inactive      "#282828")  ;; Dark Gray
+            (border           "#4E4E4E")  ;; Darker Gray
+
+  ;;; Common accent foregrounds
+
+            (red             "#FF6347")  ;; Tomato Red
+            (green           "#32CD32")  ;; Lime Green
+            (yellow          "#FFD700")  ;; Gold Yellow
+            (blue            "#1E90FF")  ;; Dodger Blue
+            (magenta         "#FF00FF")  ;; Magenta
+            (cyan            "#00CED1")  ;; Dark Turquoise
+            (orange          "#FFA500")  ;; Orange
+
+  ;;; Uncommon accent foregrounds
+
+            (rust            "#FF4500")  ;; Orange Red
+            (gold            "#FFD700")  ;; Gold Yellow
+            (olive           "#6B8E23")  ;; Olive Green
+            (slate           "#4682B4")  ;; Steel Blue
+            (indigo          "#4B0082")  ;; Indigo
+            (maroon          "#800000")  ;; Maroon
+            (pink            "#FF1493")  ;; Deep Pink
+
+  ;;; Common accent backgrounds
+
+            (bg-red-intense     "#FF6347")  ;; Tomato Red
+            (bg-green-intense   "#32CD32")  ;; Lime Green
+            (bg-yellow-intense  "#FFD700")  ;; Gold Yellow
+            (bg-blue-intense    "#1E90FF")  ;; Dodger Blue
+            (bg-magenta-intense "#FF00FF")  ;; Magenta
+            (bg-cyan-intense    "#00CED1")  ;; Dark Turquoise
+            (bg-orange-intense  "#FFA500")  ;; Orange
+
+            (bg-red-subtle      "#FF6347")  ;; Tomato Red
+            (bg-green-subtle    "#32CD32")  ;; Lime Green
+            (bg-yellow-subtle   "#FFD700")  ;; Gold Yellow
+            (bg-blue-subtle     "#1E90FF")  ;; Dodger Blue
+            (bg-magenta-subtle  "#FF00FF")  ;; Magenta
+            (bg-cyan-subtle     "#00CED1")  ;; Dark Turquoise
+            (bg-orange-subtle   "#FFA500")  ;; Orange
+
+  ;;; Uncommon accent background and foreground pairs
+
+            (bg-clay     "#FF6347")  ;; Tomato Red
+            (fg-clay     "#F8F8F2")  ;; Off-white
+
+            (bg-ochre    "#FFD700")  ;; Gold Yellow
+            (fg-ochre    "#F8F8F2")  ;; Off-white
+
+            (bg-lavender "#FF00FF")  ;; Magenta
+            (fg-lavender "#F8F8F2")  ;; Off-white
+
+            (bg-sage     "#32CD32")  ;; Lime Green
+            (fg-sage     "#F8F8F2")  ;; Off-white
+
+  ;;; Graphs
+
+            (bg-graph-red-0     "#FF6347")  ;; Tomato Red
+            (bg-graph-green-0   "#32CD32")  ;; Lime Green
+            (bg-graph-yellow-0  "#FFD700")  ;; Gold Yellow
+            (bg-graph-blue-0    "#1E90FF")  ;; Dodger Blue
+            (bg-graph-magenta-0 "#FF00FF")  ;; Magenta
+            (bg-graph-cyan-0    "#00CED1")  ;; Dark Turquoise
+
+  ;;; Special purpose
+
+            (bg-completion       "#4E4E4E")  ;; Darker Gray
+            (bg-hover            "#4E4E4E")  ;; Darker Gray
+            (bg-hl-line          "#3C3C3C")  ;; Dim Gray
+            (bg-region           "#3C3C3C")  ;; Dim Gray
+            (fg-region           "#F8F8F2")  ;; Off-white
+
+            (bg-char-0 "#1E90FF")  ;; Dodger Blue
+            (bg-char-1 "#FF00FF")  ;; Magenta
+            (bg-char-2 "#32CD32")  ;; Lime Green
+
+            (bg-mode-line-active        bg-main)  ;; Darker Gray
+            (fg-mode-line-active        "#F8F8F2")  ;; Off-white
+            (border-mode-line-active    "#4E4E4E")  ;; Darker Gray
+            (bg-mode-line-inactive      "#282828")  ;; Dark Gray
+            (fg-mode-line-inactive      "#B0B0B0")  ;; Light Gray
+            (border-mode-line-inactive  "#4E4E4E")  ;; Darker Gray
+
+            (modeline-err     "#FF6347")  ;; Tomato Red
+            (modeline-warning "#FFD700")  ;; Gold Yellow
+            (modeline-info    "#00CED1")  ;; Dark Turquoise
+
+            (bg-tab-bar      "#282828")  ;; Dark Gray
+            (bg-tab-current  "#3C3C3C")  ;; Dim Gray
+            (bg-tab-other    "#4E4E4E")  ;; Darker Gray
+
+  ;;; Diffs
+
+            (bg-added           "#32CD32")  ;; Lime Green
+            (bg-changed         "#FFD700")  ;; Gold Yellow
+            (bg-removed         "#FF6347")  ;; Tomato Red
+            (bg-diff-context    "#3C3C3C")  ;; Dim Gray
+
+  ;;; Paren match
+
+            (bg-paren-match        "#4E4E4E")  ;; Darker Gray
+            (fg-paren-match        "#F8F8F2")  ;; Off-white
+            (bg-paren-expression   "#3C3C3C")  ;; Dim Gray
+
+  ;;; Mappings
+
+  ;;;; General mappings
+
+            (fringe bg-dim)
+            (cursor orange-intense)
+
+            (keybind orange-warmer)
+            (name orange)
+            (identifier yellow-faint)
+
+            (err red)
+            (warning yellow-warmer)
+            (info cyan-cooler)
+
+            (underline-err red-intense)
+            (underline-warning yellow)
+            (underline-note cyan)
+
+            (bg-prominent-err bg-red-intense)
+            (fg-prominent-err fg-main)
+            (bg-prominent-warning bg-yellow-intense)
+            (fg-prominent-warning fg-main)
+            (bg-prominent-note bg-cyan-intense)
+            (fg-prominent-note fg-main)
+
+            (bg-active-argument bg-yellow-nuanced)
+            (fg-active-argument yellow-cooler)
+            (bg-active-value bg-cyan-nuanced)
+            (fg-active-value cyan-cooler)
+
+  ;;;; Code mappings
+
+            (bracket fg-main)
+            (builtin magenta-warmer)
+            (comment red-faint)
+            (constant blue-cooler)
+            (delimiter fg-main)
+            (docmarkup magenta-faint)
+            (docstring cyan-faint)
+            (fnname magenta)
+            (keyword magenta-cooler)
+            (number fg-main)
+            (operator fg-main)
+            (preprocessor red-cooler)
+            (punctuation fg-main)
+            (rx-backslash magenta)
+            (rx-construct green-cooler)
+            (string blue-warmer)
+            (type cyan-cooler)
+            (variable cyan)
+
+  ;;;; Accent mappings
+
+            (accent-0 blue-cooler)
+            (accent-1 magenta-warmer)
+            (accent-2 cyan-cooler)
+            (accent-3 yellow)
+
+  ;;;; Button mappings
+
+            (fg-button-active fg-main)
+            (fg-button-inactive fg-dim)
+            (bg-button-active bg-active)
+            (bg-button-inactive bg-dim)
+
+  ;;;; Completion mappings
+
+            (fg-completion-match-0 blue-cooler)
+            (fg-completion-match-1 magenta-warmer)
+            (fg-completion-match-2 cyan-cooler)
+            (fg-completion-match-3 yellow)
+            (bg-completion-match-0 unspecified)
+            (bg-completion-match-1 unspecified)
+            (bg-completion-match-2 unspecified)
+            (bg-completion-match-3 unspecified)
+
+  ;;;; Date mappings
+
+            (date-common cyan)
+            (date-deadline red-cooler)
+            (date-deadline-subtle red-faint)
+            (date-event fg-alt)
+            (date-holiday magenta-warmer)
+            (date-holiday-other blue)
+            (date-now fg-main)
+            (date-range fg-alt)
+            (date-scheduled yellow-cooler)
+            (date-scheduled-subtle yellow-faint)
+            (date-weekday cyan)
+            (date-weekend magenta)
+
+  ;;;; Line number mappings
+
+            (fg-line-number-inactive fg-dim)
+            (fg-line-number-active fg-main)
+
+            ))
+
+    ;; load the theme after setting the colors
+    (load-theme 'modus-vivendi-tinted t))
+#+end_src
+* Theme Configurations Hello Kitty
+** Set main
+theme
+
+
+This is the main theme to set colors and such
+#+begin_src emacs-lisp
+  ;; set theme colors
+  (use-package modus-themes
+    :ensure nil
+    :config
+
+    ;; configure the theme color and behavior
+
+    ;; set fonts constructs
+    (setq modus-themes-italic-constructs t
+          modus-themes-bold-constructs t
+          modus-themes-mixed-fonts t
+          modus-themes-variable-pitch-ui t
+          modus-themes-custom-auto-reload t
+          modus-themes-disable-other-themes t)
+
+    ;; configure sizing of orgmode headings
+    (setq modus-themes-headings
+          '((1 . (variable-pitch 1.3))
+            (2 . (1.1))
+            (agenda-date . (1.3))
+            (agenda-structure . (variable-pitch light 1.3))
+            (t . (1.1))))
+
+    (setq modus-vivendi-tinted-palette-overrides
+          '(
+
+  ;;; Basic Values
+
+            ;; Background and Foreground colors
+            (bg-main          "#D8A7D3")  ;; Light Pink
+            (bg-dim           "#F1C6D8")  ;; Soft Pink
+            (fg-main          "#F8F8F8")  ;; Off-white
+            (fg-dim           "#A0E3F1")  ;; Light Lavender
+            (fg-alt           "#FFB6C1")  ;; Light Pink
+            (bg-active        "#FAD1D9")  ;; Very Light Pink
+            (bg-inactive      "#F0C6D1")  ;; Pale Pink
+            (border           "#D8A1C0")  ;; Soft Coral
+
+  ;;; Common Accent Foregrounds
+
+            ;; Red Tones
+            (red             "#FF6B81")  ;; Warm Pink
+            (red-warmer      "#FF5A5A")  ;; Soft Red
+            (red-cooler      "#FF8D8D")  ;; Light Coral
+            (red-faint       "#FFB7C5")  ;; Faint Red
+            (red-intense     "#F05365")  ;; Intense Pink
+
+            ;; Green Tones
+            (green           "#89FFAF")  ;; Mint Green
+            (green-warmer    "#A3E9C4")  ;; Pale Mint
+            (green-cooler    "#6BFF8F")  ;; Pastel Green
+            (green-faint     "#A8E4D8")  ;; Light Green
+            (green-intense   "#66E1A8")  ;; Strong Mint
+
+            ;; Yellow Tones
+            (yellow          "#FFD34F")  ;; Soft Yellow
+            (yellow-warmer   "#F8D03C")  ;; Warm Yellow
+            (yellow-cooler   "#F8D57F")  ;; Pale Yellow
+            (yellow-faint    "#F2E1A1")  ;; Faint Yellow
+            (yellow-intense  "#FFDA57")  ;; Intense Yellow
+
+            ;; Blue Tones
+            (blue            "#A6D8FF")  ;; Soft Sky Blue
+            (blue-warmer     "#7FB5E7")  ;; Light Blue
+            (blue-cooler     "#8BCFF8")  ;; Light Cyan
+            (blue-faint      "#B2D8FF")  ;; Faint Blue
+            (blue-intense    "#87B8FF")  ;; Strong Blue
+
+            ;; Magenta Tones
+            (magenta         "#F7A0D6")  ;; Pastel Magenta
+            (magenta-warmer  "#FF80D0")  ;; Warm Magenta
+            (magenta-cooler  "#FF80FF")  ;; Cool Magenta
+            (magenta-faint   "#F2A9D1")  ;; Faint Magenta
+            (magenta-intense "#D45C9D")  ;; Intense Magenta
+
+            ;; Cyan Tones
+            (cyan            "#A0E3F1")  ;; Soft Cyan
+            (cyan-warmer     "#89D0FF")  ;; Pale Cyan
+            (cyan-cooler     "#7CC1E1")  ;; Light Cyan
+            (cyan-faint      "#B2E4F2")  ;; Faint Cyan
+            (cyan-intense    "#82D0E6")  ;; Strong Cyan
+
+  ;;; Uncommon Accent Foregrounds
+
+            ;; Special Accent Tones
+            (rust       "#F37A5E")  ;; Coral
+            (gold       "#F7C35B")  ;; Soft Gold
+            (olive      "#B6D69C")  ;; Pale Olive
+            (slate      "#D1B8E3")  ;; Soft Purple
+            (indigo     "#C6A1D7")  ;; Light Indigo
+            (maroon     "#F3A1C3")  ;; Soft Red
+            (pink       "#F6A6D8")  ;; Pink
+
+  ;;; Common Accent Backgrounds
+
+            ;; Accent Backgrounds
+            (bg-red-intense     "#F46A6A")  ;; Intense Pink
+            (bg-green-intense   "#A2D9A2")  ;; Intense Mint Green
+            (bg-yellow-intense  "#F8C13D")  ;; Intense Yellow
+            (bg-blue-intense    "#7FB0E7")  ;; Intense Blue
+            (bg-magenta-intense "#F18DC8")  ;; Intense Magenta
+            (bg-cyan-intense    "#7BBCE4")  ;; Intense Cyan
+
+            (bg-red-subtle      "#F2A0A0")  ;; Subtle Pink
+            (bg-green-subtle    "#A3E5D5")  ;; Subtle Mint Green
+            (bg-yellow-subtle   "#F7D586")  ;; Subtle Yellow
+            (bg-blue-subtle     "#A3D0FF")  ;; Subtle Blue
+            (bg-magenta-subtle  "#F5A9D1")  ;; Subtle Magenta
+            (bg-cyan-subtle     "#A1E4F1")  ;; Subtle Cyan
+
+            (bg-red-nuanced     "#F08A8A")  ;; Nuanced Pink
+            (bg-green-nuanced   "#A8E9B8")  ;; Nuanced Green
+            (bg-yellow-nuanced  "#F9D36F")  ;; Nuanced Yellow
+            (bg-blue-nuanced    "#A0D0FF")  ;; Nuanced Blue
+            (bg-magenta-nuanced "#F0A8D8")  ;; Nuanced Magenta
+            (bg-cyan-nuanced    "#A1E8F4")  ;; Nuanced Cyan
+
+  ;;; Uncommon Accent Background and Foreground Pairs
+
+            ;; Special Pairings
+            (bg-clay     "#F2C0B3")  ;; Clay Pink
+            (fg-clay     "#F5B0A6")  ;; Soft Pink
+
+            (bg-ochre    "#F7C17D")  ;; Ochre Yellow
+            (fg-ochre    "#F2D8A9")  ;; Soft Gold
+
+            (bg-lavender "#E5D4F2")  ;; Lavender Pink
+            (fg-lavender "#D1A5E3")  ;; Lavender Purple
+
+            (bg-sage     "#A7E1D5")  ;; Sage Green
+            (fg-sage     "#B1F3D2")  ;; Light Sage Green
+
+  ;;; Graph Colors
+
+            (bg-graph-red-0     "#F0786F")  ;; Graph Red
+            (bg-graph-red-1     "#E3605C")  ;; Graph Red 2
+            (bg-graph-green-0   "#90E5A1")  ;; Graph Green
+            (bg-graph-green-1   "#75D09A")  ;; Graph Green 2
+            (bg-graph-yellow-0  "#F9D23B")  ;; Graph Yellow
+            (bg-graph-yellow-1  "#F6D25E")  ;; Graph Yellow 2
+            (bg-graph-blue-0    "#A2D4FF")  ;; Graph Blue
+            (bg-graph-blue-1    "#8EB9E7")  ;; Graph Blue 2
+            (bg-graph-magenta-0 "#F0A3C2")  ;; Graph Magenta
+            (bg-graph-magenta-1 "#F17BBF")  ;; Graph Magenta 2
+            (bg-graph-cyan-0    "#A0E1F4")  ;; Graph Cyan
+            (bg-graph-cyan-1    "#88D6F3")  ;; Graph Cyan 2
+
+  ;;; Special Purpose
+
+            (bg-completion       "#F4B4D2")  ;; Completion background
+            (bg-hover            "#F6D5E3")  ;; Hover background
+            (bg-hover-secondary  "#F7C5D1")  ;; Secondary hover background
+            (bg-hl-line          "#F9D1E3")  ;; Highlight Line
+            (bg-region           "#F0B5D9")  ;; Region background
+            (fg-region           "#F8F8F8")  ;; Region foreground
+
+            (bg-char-0 "#F3A1C8")  ;; Char 1 background
+            (bg-char-1 "#F5A6D8")  ;; Char 2 background
+            (bg-char-2 "#F7B0E1")  ;; Char 3 background
+
+            (bg-mode-line-active        "#F0B5D9")  ;; Mode Line active background
+            (fg-mode-line-active        "#F8F8F8")  ;; Mode Line active foreground
+            (border-mode-line-active    "#F7A8D9")  ;; Mode Line active border
+            (bg-mode-line-inactive      "#F0C0D9")  ;; Mode Line inactive background
+            (fg-mode-line-inactive      "#E8A0D1")  ;; Mode Line inactive foreground
+            (border-mode-line-inactive  "#E1A7C9")  ;; Mode Line inactive border
+
+  ;;; Diffs
+
+            (bg-added           "#A4D9A4")  ;; Added background
+            (bg-added-faint     "#A1E5A1")  ;; Faint added background
+            (bg-added-refine    "#8AD58A")  ;; Refined added background
+            (bg-added-fringe    "#9AD79A")  ;; Added fringe background
+            (fg-added           "#7FBF7F")  ;; Added foreground
+            (fg-added-intense   "#66D766")  ;; Intense added foreground
+
+            (bg-changed         "#F4A839")  ;; Changed background
+            (bg-changed-faint   "#F2A754")  ;; Faint changed background
+            (bg-changed-refine  "#F0A35F")  ;; Refined changed background
+            (bg-changed-fringe  "#F4B46F")  ;; Changed fringe background
+            (fg-changed         "#FFEC78")  ;; Changed foreground
+            (fg-changed-intense "#F1D452")  ;; Intense changed foreground
+
+            (bg-removed         "#FF6B8C")  ;; Removed background
+            (bg-removed-faint   "#F8A1B4")  ;; Faint removed background
+            (bg-removed-refine  "#F59A96")  ;; Refined removed background
+            (bg-removed-fringe  "#F38087")  ;; Removed fringe background
+            (fg-removed         "#FF8C8C")  ;; Removed foreground
+            (fg-removed-intense "#FF6B70")  ;; Intense removed foreground
+
+            (bg-diff-context    "#F2E1F5")  ;; Diff context background
+
+            ;;; Paren Match
+
+            (bg-paren-match        "#F8A1C3")  ;; Paren match background
+            (fg-paren-match        fg-main)  ;; Paren match foreground
+            (bg-paren-expression   "#F6A0C2")  ;; Paren expression background
+            (fg-paren-expression   fg-main)  ;; Paren expression foreground
+
+          ;;;; General mappings
+
+            (fringe bg-dim)
+            (cursor orange-intense)
+
+            (keybind orange-warmer)
+            (name orange)
+            (identifier yellow-faint)
+
+            (err red)
+            (warning yellow-warmer)
+            (info cyan-cooler)
+
+            (underline-err red-intense)
+            (underline-warning yellow)
+            (underline-note cyan)
+
+            (bg-prominent-err bg-red-intense)
+            (fg-prominent-err fg-main)
+            (bg-prominent-warning bg-yellow-intense)
+            (fg-prominent-warning fg-main)
+            (bg-prominent-note bg-cyan-intense)
+            (fg-prominent-note fg-main)
+
+            (bg-active-argument bg-yellow-nuanced)
+            (fg-active-argument yellow-cooler)
+            (bg-active-value bg-cyan-nuanced)
+            (fg-active-value cyan-cooler)
+
+          ;;;; Code mappings
+
+            (bracket fg-main)
+            (builtin magenta-warmer)
+            (comment fg-dim)
+            (constant blue-cooler)
+            (delimiter fg-main)
+            (docmarkup magenta-faint)
+            (docstring cyan-faint)
+            (fnname magenta)
+            (keyword magenta-cooler)
+            (number fg-main)
+            (operator fg-main)
+            (preprocessor red-cooler)
+            (punctuation fg-main)
+            (rx-backslash magenta)
+            (rx-construct green-cooler)
+            (string blue-warmer)
+            (type cyan-cooler)
+            (variable cyan)
+
+          ;;;; Accent mappings
+
+            (accent-0 blue-cooler)
+            (accent-1 magenta-warmer)
+            (accent-2 cyan-cooler)
+            (accent-3 yellow)
+
+          ;;;; Button mappings
+
+            (fg-button-active fg-main)
+            (fg-button-inactive fg-dim)
+            (bg-button-active bg-active)
+            (bg-button-inactive bg-dim)
+
+          ;;;; Completion mappings
+
+            (fg-completion-match-0 blue-cooler)
+            (fg-completion-match-1 magenta-warmer)
+            (fg-completion-match-2 cyan-cooler)
+            (fg-completion-match-3 yellow)
+            (bg-completion-match-0 unspecified)
+            (bg-completion-match-1 unspecified)
+            (bg-completion-match-2 unspecified)
+            (bg-completion-match-3 unspecified)
+
+          ;;;; Date mappings
+
+            (date-common cyan)
+            (date-deadline red-cooler)
+            (date-deadline-subtle red-faint)
+            (date-event fg-alt)
+            (date-holiday magenta-warmer)
+            (date-holiday-other blue)
+            (date-now fg-main)
+            (date-range fg-alt)
+            (date-scheduled yellow-cooler)
+            (date-scheduled-subtle yellow-faint)
+            (date-weekday cyan)
+            (date-weekend magenta)
+
+          ;;;; Line number mappings
+
+            (fg-line-number-inactive fg-dim)
+            (fg-line-number-active fg-main)
+            (bg-line-number-inactive bg-dim)
+            (bg-line-number-active bg-main)
+
+            ))
+
+    ;; load the theme after setting the colors
+    (load-theme 'modus-vivendi-tinted t))
+#+end_src
+
+* Theme Configurations Hello Kitty Dark
+** Set main
+theme
+
+
+This is the main theme to set colors and such
+#+begin_src emacs-lisp
+  ;; set theme colors
+  (use-package modus-themes
+    :ensure nil
+    :config
+
+    ;; configure the theme color and behavior
+
+    ;; set fonts constructs
+    (setq modus-themes-italic-constructs t
+          modus-themes-bold-constructs t
+          modus-themes-mixed-fonts t
+          modus-themes-variable-pitch-ui t
+          modus-themes-custom-auto-reload t
+          modus-themes-disable-other-themes t)
+
+    ;; configure sizing of orgmode headings
+    (setq modus-themes-headings
+          '((1 . (variable-pitch 1.3))
+            (2 . (1.1))
+            (agenda-date . (1.3))
+            (agenda-structure . (variable-pitch light 1.3))
+            (t . (1.1))))
+
+    (setq modus-vivendi-tinted-palette-overrides
+          '(
+
+  ;;; Basic Values
+
+            ;; Background and Foreground colors
+            (bg-main          "#3A2D3A")  ;; Dark Mauve
+            (bg-dim           "#4C3C4C")  ;; Soft Dark Pink
+            (fg-main          "#F1D8F2")  ;; Off-white Lilac
+            (fg-dim           "#C3A3B9")  ;; Light Lavender
+            (fg-alt           "#FF9F9F")  ;; Light Coral
+            (bg-active        "#5F455F")  ;; Darker Pink
+            (bg-inactive      "#3F2D3F")  ;; Dark Mauve
+            (border           "#4E3D4E")  ;; Soft Dark Coral
+
+  ;;; Common Accent Foregrounds
+
+            ;; Red Tones
+            (red             "#FF5A6A")  ;; Warm Pink
+            (red-warmer      "#F95353")  ;; Soft Red
+            (red-cooler      "#FF7C7C")  ;; Light Coral
+            (red-faint       "#FF8F98")  ;; Faint Red
+            (red-intense     "#F04656")  ;; Intense Pink
+
+            ;; Green Tones
+            (green           "#6BBF7E")  ;; Mint Green
+            (green-warmer    "#87C7A2")  ;; Pale Mint
+            (green-cooler    "#4DAF6F")  ;; Pastel Green
+            (green-faint     "#75C9A6")  ;; Light Green
+            (green-intense   "#58C07F")  ;; Strong Mint
+
+            ;; Yellow Tones
+            (yellow          "#F1A92D")  ;; Soft Yellow
+            (yellow-warmer   "#F7A323")  ;; Warm Yellow
+            (yellow-cooler   "#F7A94D")  ;; Pale Yellow
+            (yellow-faint    "#F1B97A")  ;; Faint Yellow
+            (yellow-intense  "#FFBC40")  ;; Intense Yellow
+
+            ;; Blue Tones
+            (blue            "#7DA0C4")  ;; Soft Sky Blue
+            (blue-warmer     "#6188B3")  ;; Light Blue
+            (blue-cooler     "#6DB5C2")  ;; Light Cyan
+            (blue-faint      "#A4C4D3")  ;; Faint Blue
+            (blue-intense    "#577DA3")  ;; Strong Blue
+
+            ;; Magenta Tones
+            (magenta         "#F18BB5")  ;; Pastel Magenta
+            (magenta-warmer  "#F27BC2")  ;; Warm Magenta
+            (magenta-cooler  "#F06FBB")  ;; Cool Magenta
+            (magenta-faint   "#F0A2C4")  ;; Faint Magenta
+            (magenta-intense "#D45A8F")  ;; Intense Magenta
+
+            ;; Cyan Tones
+            (cyan            "#66A3C4")  ;; Soft Cyan
+            (cyan-warmer     "#5D97B1")  ;; Pale Cyan
+            (cyan-cooler     "#57A4A9")  ;; Light Cyan
+            (cyan-faint      "#91D3E5")  ;; Faint Cyan
+            (cyan-intense    "#4F8D99")  ;; Strong Cyan
+
+  ;;; Uncommon Accent Foregrounds
+
+            ;; Special Accent Tones
+            (rust       "#F27D5D")  ;; Coral
+            (gold       "#F7C56A")  ;; Soft Gold
+            (olive      "#A7C89F")  ;; Pale Olive
+            (slate      "#B38DAA")  ;; Soft Purple
+            (indigo     "#9C7DB9")  ;; Light Indigo
+            (maroon     "#F2A7B4")  ;; Soft Red
+            (pink       "#F5A9D8")  ;; Pink
+
+  ;;; Common Accent Backgrounds
+
+            ;; Accent Backgrounds
+            (bg-red-intense     "#F24B56")  ;; Intense Pink
+            (bg-green-intense   "#8CBF80")  ;; Intense Mint Green
+            (bg-yellow-intense  "#F29D1B")  ;; Intense Yellow
+            (bg-blue-intense    "#4E7DA3")  ;; Intense Blue
+            (bg-magenta-intense "#F17B97")  ;; Intense Magenta
+            (bg-cyan-intense    "#3C7587")  ;; Intense Cyan
+
+            (bg-red-subtle      "#F2A5A0")  ;; Subtle Pink
+            (bg-green-subtle    "#82D6B2")  ;; Subtle Mint Green
+            (bg-yellow-subtle   "#F7C078")  ;; Subtle Yellow
+            (bg-blue-subtle     "#A2C8D8")  ;; Subtle Blue
+            (bg-magenta-subtle  "#F1A5C0")  ;; Subtle Magenta
+            (bg-cyan-subtle     "#79C2D3")  ;; Subtle Cyan
+
+            (bg-red-nuanced     "#F08B88")  ;; Nuanced Pink
+            (bg-green-nuanced   "#80D5B6")  ;; Nuanced Green
+            (bg-yellow-nuanced  "#F3A63F")  ;; Nuanced Yellow
+            (bg-blue-nuanced    "#7DA2C7")  ;; Nuanced Blue
+            (bg-magenta-nuanced "#F18BB3")  ;; Nuanced Magenta
+            (bg-cyan-nuanced    "#71A4B8")  ;; Nuanced Cyan
+
+  ;;; Uncommon Accent Background and Foreground Pairs
+
+            ;; Special Pairings
+            (bg-clay     "#E5B0A2")  ;; Clay Pink
+            (fg-clay     "#F0B2A4")  ;; Soft Pink
+
+            (bg-ochre    "#F7A452")  ;; Ochre Yellow
+            (fg-ochre    "#F2C6A2")  ;; Soft Gold
+
+            (bg-lavender "#D1A4D5")  ;; Lavender Pink
+            (fg-lavender "#B380B8")  ;; Lavender Purple
+
+            (bg-sage     "#8FB7B0")  ;; Sage Green
+            (fg-sage     "#A0C7C1")  ;; Light Sage Green
+
+  ;;; Graph Colors
+
+            (bg-graph-red-0     "#F78D7B")  ;; Graph Red
+            (bg-graph-red-1     "#F07364")  ;; Graph Red 2
+            (bg-graph-green-0   "#74D6A1")  ;; Graph Green
+            (bg-graph-green-1   "#5FAD8D")  ;; Graph Green 2
+            (bg-graph-yellow-0  "#F2B22D")  ;; Graph Yellow
+            (bg-graph-yellow-1  "#F0A935")  ;; Graph Yellow 2
+            (bg-graph-blue-0    "#5D8BAE")  ;; Graph Blue
+            (bg-graph-blue-1    "#3F73A2")  ;; Graph Blue 2
+            (bg-graph-magenta-0 "#F08A9F")  ;; Graph Magenta
+            (bg-graph-magenta-1 "#F1A0B5")  ;; Graph Magenta 2
+            (bg-graph-cyan-0    "#71B3C3")  ;; Graph Cyan
+            (bg-graph-cyan-1    "#4B8E98")  ;; Graph Cyan 2
+
+  ;;; Special Purpose
+
+            (bg-completion       red)  ;; Completion background
+            (bg-hover            "#F4D1E3")  ;; Hover background
+            (bg-hover-secondary  "#F5B9D1")  ;; Secondary hover background
+            (bg-hl-line          "#F8D5E1")  ;; Highlight Line
+            (bg-region           "#F3C7D9")  ;; Region background
+            (fg-region           "#F1F1F1")  ;; Region foreground
+
+            (bg-char-0 "#F3A5C4")  ;; Char 1 background
+            (bg-char-1 "#F5A9D9")  ;; Char 2 background
+            (bg-char-2 "#F7A0C7")  ;; Char 3 background
+
+            (bg-mode-line-active        red)  ;; Mode Line active background
+            (fg-mode-line-active        fg-main)  ;; Mode Line active foreground
+            (border-mode-line-active    "#F2A6D7")  ;; Mode Line active border
+            (bg-mode-line-inactive      red)  ;; Mode Line inactive background
+            (fg-mode-line-inactive      fg-dim)  ;; Mode Line inactive foreground
+            (border-mode-line-inactive  "#D8A6D5")  ;; Mode Line inactive border
+
+  ;;; Diffs
+
+            (bg-added           "#7FD89A")  ;; Added background
+            (bg-added-faint     "#A5D9A5")  ;; Faint added background
+            (bg-added-refine    "#5BDB89")  ;; Refined added background
+            (bg-added-fringe    "#8FD896")  ;; Added fringe background
+            (fg-added           "#6F9D6F")  ;; Added foreground
+            (fg-added-intense   "#4DB94D")  ;; Intense added foreground
+
+            (bg-changed         "#E1A04F")  ;; Changed background
+            (bg-changed-faint   "#F0A057")  ;; Faint changed background
+            (bg-changed-refine  "#F0A56F")  ;; Refined changed background
+            (bg-changed-fringe  "#F2B06F")  ;; Changed fringe background
+            (fg-changed         "#D9DA6D")  ;; Changed foreground
+            (fg-changed-intense "#D0D52B")  ;; Intense changed foreground
+
+            (bg-removed         "#F78B9B")  ;; Removed background
+            (bg-removed-faint   "#F2A1B7")  ;; Faint removed background
+            (bg-removed-refine  "#F18F93")  ;; Refined removed background
+            (bg-removed-fringe  "#F37087")  ;; Removed fringe background
+            (fg-removed         "#F1A6A6")  ;; Removed foreground
+            (fg-removed-intense "#F07B79")  ;; Intense removed foreground
+
+            (bg-diff-context    "#F1E2F2")  ;; Diff context background
+
+  ;;; Paren Match
+
+            (bg-paren-match        "#F3A0C0")  ;; Paren match background
+            (fg-paren-match        fg-main)  ;; Paren match foreground
+            (bg-paren-expression   "#F1A2C5")  ;; Paren expression background
+            (fg-paren-expression   fg-main)  ;; Paren expression foreground
+
+            ;;;; General mappings
+
+            (fringe bg-dim)
+            (cursor red)
+
+            (keybind orange-warmer)
+            (name orange)
+            (identifier yellow-faint)
+
+            (err red)
+            (warning yellow-warmer)
+            (info cyan-cooler)
+
+            (underline-err red-intense)
+            (underline-warning yellow)
+            (underline-note cyan)
+
+            (bg-prominent-err bg-red-intense)
+            (fg-prominent-err fg-main)
+            (bg-prominent-warning bg-yellow-intense)
+            (fg-prominent-warning fg-main)
+            (bg-prominent-note bg-cyan-intense)
+            (fg-prominent-note fg-main)
+
+            (bg-active-argument bg-yellow-nuanced)
+            (fg-active-argument yellow-cooler)
+            (bg-active-value bg-cyan-nuanced)
+            (fg-active-value cyan-cooler)
+
+            ;;;; Code mappings
+
+            (bracket fg-main)
+            (builtin magenta-warmer)
+            (comment red-faint)
+            (constant blue-cooler)
+            (delimiter fg-main)
+            (docmarkup magenta-faint)
+            (docstring cyan-faint)
+            (fnname magenta)
+            (keyword magenta-cooler)
+            (number fg-main)
+            (operator fg-main)
+            (preprocessor red-cooler)
+            (punctuation fg-main)
+            (rx-backslash magenta)
+            (rx-construct green-cooler)
+            (string blue-warmer)
+            (type cyan-cooler)
+            (variable cyan)
+
+            ;;;; Accent mappings
+
+            (accent-0 blue-cooler)
+            (accent-1 magenta-warmer)
+            (accent-2 cyan-cooler)
+            (accent-3 yellow)
+
+            ;;;; Button mappings
+
+            (fg-button-active fg-main)
+            (fg-button-inactive fg-dim)
+            (bg-button-active bg-active)
+            (bg-button-inactive bg-dim)
+
+            ;;;; Completion mappings
+
+            (fg-completion-match-0 blue-cooler)
+            (fg-completion-match-1 magenta-warmer)
+            (fg-completion-match-2 cyan-cooler)
+            (fg-completion-match-3 yellow)
+            (bg-completion-match-0 unspecified)
+            (bg-completion-match-1 unspecified)
+            (bg-completion-match-2 unspecified)
+            (bg-completion-match-3 unspecified)
+
+            ;;;; Date mappings
+
+            (date-common cyan)
+            (date-deadline red-cooler)
+            (date-deadline-subtle red-faint)
+            (date-event fg-alt)
+            (date-holiday magenta-warmer)
+            (date-holiday-other blue)
+            (date-now fg-main)
+            (date-range fg-alt)
+            (date-scheduled yellow-cooler)
+            (date-scheduled-subtle yellow-faint)
+            (date-weekday cyan)
+            (date-weekend magenta)
+
+            ;;;; Line number mappings
+
+            (fg-line-number-inactive red-faint)
+            (fg-line-number-active fg-main)
+            (bg-line-number-inactive bg-main)
+            (bg-line-number-active red-intense)
+
+            ))
+
+    ;; load the theme after setting the colors
+    (load-theme 'modus-vivendi-tinted t))
+#+end_src
