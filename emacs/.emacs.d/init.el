@@ -81,12 +81,12 @@
   (setq modus-themes-italic-constructs t
 	modus-themes-bold-constructs t
 	modus-themes-mixed-fonts t
-	modus-thenmes-variable-pitch-ui t
+	modus-themes-variable-pitch-ui t
 	modus-themes-custom-auto-reload t
 	modus-themes-disable-other-themes t)
 
-  ;; configure sizing of orgmode headings
-  (setq modus-themes-headings
+  ;; Configure heading scaling
+  (setq modus-themes-scale-headings
 	'((1 . (variable-pitch 1.4))
 	  (2 . (1.3))
 	  (3 . (1.2))
