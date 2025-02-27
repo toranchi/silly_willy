@@ -23,6 +23,8 @@
   (setq org-insert-heading-respect-content t)
   (setq org-log-done 'time)
   (setq org-log-into-drawer t)
+  (setq org-ellipsis " ") ; a downward triangle
+
 
   ;; permit the use or #+ATTR_ORG: :width
   (setq org-image-actual-width nil)
@@ -73,28 +75,29 @@
 (use-package modus-themes
   :ensure nil
   :config
-
   ;; configure the theme color and behavior
 
   ;; set fonts constructs
   (setq modus-themes-italic-constructs t
 	modus-themes-bold-constructs t
 	modus-themes-mixed-fonts t
-	modus-themes-variable-pitch-ui t
+	modus-thenmes-variable-pitch-ui t
 	modus-themes-custom-auto-reload t
 	modus-themes-disable-other-themes t)
 
   ;; configure sizing of orgmode headings
   (setq modus-themes-headings
-	'((1 . (variable-pitch 1.3))
-	  (2 . (1.1))
+	'((1 . (variable-pitch 1.4))
+	  (2 . (1.3))
+	  (3 . (1.2))
+	  (4 . (1.1))
 	  (agenda-date . (1.3))
 	  (agenda-structure . (variable-pitch light 1.3))
 	  (t . (1.1))))
   
   (setq modus-vivendi-tinted-palette-overrides
-	'((bg-main          "#444444") ;; main background
-	  (bg-dim           "#333333") ;; used in code section of orgmode
+	'((bg-main          "#212121") ;; main background
+	  (bg-dim           "#141414") ;; used in code section of orgmode
           (fg-main          "#cccccc") ;; main font
           (fg-dim           "#888888") ;; subtle font like orgmode title
           (fg-alt           yellow-intense)
@@ -123,18 +126,29 @@
           (comment fg-dim)
 	  (string green-faint)
 	  (docstring green-faint)
+	  (docmarkup green-intense)
           (fnname magenta)
 	  (type yellow)
 	  (variable  "#FFA500")
-
+	  (number yellow-intense)
+	  (operator yellow-intense)
+	  (punctuation magenta-intense)
+	  (braket yellow-intense)
+	  (delimiter yellow-intense)
+	  (rx-backslash "#ffffff")
+	  (rx-construct magenta)
+	  (name cyan-cooler)
+	  (keybind cyan-cooler)
+	  (identifier cyan-cooler)
+	  (info           "#00AA00")
+	  (warning        "#fec43f")
+	  (err            "#ff5f59")
 	  
 	  ;; no idea what the next 5 do
 	  (fg-active-value yellow)
-          (accent-2 yellow)
-	  (info yellow)
-	  
+
+	  ;; the minibuffer promp
           (fg-prompt yellow)
-          (fg-prose-code yellow)
 
 	  ;; Orgmode
 	  (fg-heading-0 magenta-intense) ;; orgmode title
@@ -172,7 +186,7 @@
 	  (fg-prose-code green-cooler)
 
 	  (bg-prose-verbatim bg-main)
-	  (fg-prose-verbatim pink)
+	  (fg-prose-verbatim blue-cooler)
 
 	  (bg-prose-macro bg-dim)
 	  (fg-prose-macro magenta-cooler)
@@ -206,19 +220,21 @@
 	  (bg-link bg-main)
 	  (underline-link blue-intense)
 	  ;; not sure what this does
-	  ;; (bg-button-active bg-main)
-	  ;; (fg-button-active fg-main)
-	  ;; (bg-button-inactive bg-inactive)
-	  ;; (fg-button-inactive "gray50")
+	  (bg-button-active bg-dim)
+	  (fg-button-active "#DD7700")
+	  
+	  (bg-button-inactive bg-dim)
+	  (fg-button-inactive "gray50")
 
 	  ;; search
 	  (bg-search-current "#CC5500")
 	  (bg-search-lazy "#EE7700")
-	  ;; (bg-search-replace yellow-intense)
+	  (bg-search-replace yellow-intense)
 	  ;; (bg-seach-rx-group-0 yellow-intense)
 	  ;; (bg-seach-rx-group-1 yellow-intense)
 	  ;; (bg-seach-rx-group-2 yellow-intense)
-	  ;;(bg-seach-rx-group-3 yellow-intense)  	  
+	  ;; (bg-seach-rx-group-3 yellow-intense)
+	  
 	  ))
   
   ;; load the theme after setting the colors
@@ -345,6 +361,32 @@ The DWIM behaviour of this command is as follows:
 ;; it.
 (setq search-whitespace-regexp ".*?")
 
+;; intall ace and 
+(use-package ace-window
+  :ensure t
+  :config
+  (global-set-key (kbd "M-o") 'ace-window)
+  )
+
+;; hadcode colors because I am a lazy cat
+(custom-set-faces
+ '(aw-leading-char-face
+   ((t (:foreground "#444444" :background "#EE7700" :weight bold :height 3.5)))))
+
+;; adds indentation lines when programming, to help with python
+(use-package indent-guide
+  :ensure t
+  :config
+  ;; Enable indent-guide only in programming modes
+  (add-hook 'prog-mode-hook 'indent-guide-mode))
+
+;; this is to add emojis quickly
+(use-package emoji-insert
+  :ensure t)
+
+;; don't truncate lines, go to the next line
+(setq-default truncate-lines nil)
+
 (use-package vertico
   :ensure t
   :custom
@@ -396,6 +438,17 @@ The DWIM behaviour of this command is as follows:
 (use-package dashboard
   :ensure t
   :config
+  (custom-set-faces
+   '(dashboard-heading ((t (:foreground "#338fff" :weight bold))))
+   ;;'(dashboard-banner-logo-title ((t (:foreground "gold" :weight bold))))
+   ;;'(dashboard-footer ((t (:foreground "gray" :italic t))))
+   ;;'(dashboard-footer-icon ((t (:foreground "orange"))))
+   ;;'(dashboard-navigator ((t (:foreground "light blue"))))
+   ;;'(dashboard-items-face ((t (:foreground "white"))))
+   )
+
+
+  
   (dashboard-setup-startup-hook)
   :custom
   (dashboard-startup-banner "~/Pictures/logo.png")
@@ -407,6 +460,7 @@ The DWIM behaviour of this command is as follows:
   (dashboard-set-footer nil)
   (dashboard-projects-backend 'project-el)
   (dashboard-display-icons-p t)
+  (dashboard-week-agenda t)
   (dashboard-items '(
                      (recents . 10)
                      (agenda . 10)
@@ -424,6 +478,8 @@ The DWIM behaviour of this command is as follows:
   (emms-all)
   (emms-default-players)
   (emms-mpris-enable)
+  (emms-playing-time-mode -1)
+  (emms-mode-line-mode -1)
   (setq emms-player-list '(emms-player-vlc emms-player-mpv))
   :custom
   (emms-browser-covers #'emms-browser-cache-thumbnail-async)
@@ -525,3 +581,52 @@ rather than the whole path."
 
 ;; I have to test if this is really necessary, but i was getting errors
 ;;(setq xref-backend-functions '(eglot-xref-backend))
+
+;; (setq-default mode-line-format
+    ;;               '("%e"
+    ;;                 "Davide was here!"
+    ;;                 (:eval
+    ;;                  (let ((icon (alist-get major-mode
+    ;;                                         '((org-mode . "🦄")
+    ;;                                           (vterm-mode . "")  ;; Terminal icon
+    ;;                                           (python-mode . "")) ;; Python icon
+    ;;                                         nil nil 'string=)))
+    ;;                    (if icon (concat " " icon " ") " ")))
+    ;;                 "%b"))  ;; Show buffer name
+
+
+;; adds icons to certain modes
+(defun my-mode-icon ()
+      "Return a Nerd Font icon based on `major-mode`."
+      (let ((icon (alist-get major-mode
+                             '((org-mode . "")       ;; Unicorn for Org mode
+                               (Info-mode . "")    ;; Info icon
+                               (dashboard-mode . "")    ;; Dashboard icon
+                               (vterm-mode . " ")    ;; Terminal icon
+                               (rust-mode . "")      ;; Rust icon
+                               (python-mode . ""))   ;; Python icon 
+                             nil nil 'string=)))
+        (if icon (concat " " icon " ") ""))) ;; Add spacing around icon
+
+    (setq-default mode-line-modes
+                  (append '((:eval (my-mode-icon))) mode-line-modes))
+
+;; (with-eval-after-load 'vterm
+;;   (set-face-attribute 'vterm-color-red nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-blue nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-cyan nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-black nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-green nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-white nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-yellow nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-magenta nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-underline nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-bright-red nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-bright-blue nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-bright-cyan nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-bright-black nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-bright-green nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-bright-white nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-bright-yellow nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-inverse-video nil :foreground "#DD7700" :background "#994400")
+;;   (set-face-attribute 'vterm-color-bright-magenta nil :foreground "#DD7700" :background "#994400"))
