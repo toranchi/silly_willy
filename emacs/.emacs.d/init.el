@@ -466,10 +466,10 @@ The DWIM behaviour of this command is as follows:
                      (agenda . 10)
                      (projects . 5)
                      (bookmarks . 10)
-                     (registers . 5)
+                     (registers . 5.0)
                      )))
 
-;; Emacs Multimedia System
+;; EMMS (Emacs Multimedia System)
 (use-package emms
   :ensure t
   :config
@@ -579,39 +579,27 @@ rather than the whole path."
   :hook
   (python-base-mode-hook . eglot-ensure))
 
-;; I have to test if this is really necessary, but i was getting errors
-;;(setq xref-backend-functions '(eglot-xref-backend))
 
-;; (setq-default mode-line-format
-    ;;               '("%e"
-    ;;                 "Davide was here!"
-    ;;                 (:eval
-    ;;                  (let ((icon (alist-get major-mode
-    ;;                                         '((org-mode . "🦄")
-    ;;                                           (vterm-mode . "")  ;; Terminal icon
-    ;;                                           (python-mode . "")) ;; Python icon
-    ;;                                         nil nil 'string=)))
-    ;;                    (if icon (concat " " icon " ") " ")))
-    ;;                 "%b"))  ;; Show buffer name
-
-
-;; adds icons to certain modes
+;; Adds icons to certain modes
 (defun my-mode-icon ()
-      "Return a Nerd Font icon based on `major-mode`."
-      (let ((icon (alist-get major-mode
-                             '((org-mode . "")       ;; Unicorn for Org mode
-                               (Info-mode . "")    ;; Info icon
-                               (dashboard-mode . "")    ;; Dashboard icon
-                               (vterm-mode . " ")    ;; Terminal icon
-                               (rust-mode . "")      ;; Rust icon
-                               (python-mode . ""))   ;; Python icon 
-                             nil nil 'string=)))
-        (if icon (concat " " icon " ") ""))) ;; Add spacing around icon
+  "Return a Nerd Font icon based on `major-mode`."
+  (let ((icon (alist-get major-mode
+                         '((org-mode . "")           ; Org mode
+                           (Info-mode . "")        ; Info
+                           (dashboard-mode . "")        ; Dashboard
+                           (vterm-mode . "")         ; Terminal
+                           (rust-mode . "")          ; Rust
+                           (python-mode . ""))       ; Python
+                         nil nil 'string=)))
+    (if icon (concat " " icon " ") "")))  ; Add spacing
 
-    (setq-default mode-line-modes
-                  (append '((:eval (my-mode-icon))) mode-line-modes))
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq-default mode-line-modes
+                          (append '((:eval (my-mode-icon))) mode-line-modes))))
 
-;; (with-eval-after-load 'vterm
+
+;; (with-eval-after-load 'vterm  ; Example for customizing vterm faces
 ;;   (set-face-attribute 'vterm-color-red nil :foreground "#DD7700" :background "#994400")
 ;;   (set-face-attribute 'vterm-color-blue nil :foreground "#DD7700" :background "#994400")
 ;;   (set-face-attribute 'vterm-color-cyan nil :foreground "#DD7700" :background "#994400")
