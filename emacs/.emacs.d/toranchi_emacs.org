@@ -979,18 +979,18 @@ Vertico: organizes the minibuffer in a vertical layout and help with the search 
   (use-package vertico
     :ensure t
     :custom
-       ;; (vertico-scroll-margin 0) ;; Different scroll margin
-       ;; (vertico-count 20) ;; Show more candidates
-       ;; (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+    ;; (vertico-scroll-margin 0) ;; Different scroll margin
+    ;; (vertico-count 20) ;; Show more candidates
+    ;; (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
     (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
-    :config (vertico-mode 1)
+    :init (vertico-mode)
     :bind
-    (:map vertico-map
-  	("<left>" . vertico-directory-delete-word)
-  	("DEL" . vertico-directory-delete-char)
-  	("M-DEL" . vertico-directory-delete-word)
-  	("M-," . vertico-quick-insert)
-  	("M-." . vertico-quick-exit))) ;; it is a minor-mode and it enabled with 1
+    ( :map vertico-map
+    ("<left>" . vertico-directory-delete-word)
+    ("M-DEL" . vertico-directory-delete-word)
+    ("M-," . vertico-quick-insert)
+    ("M-." . vertico-quick-exit))
+    ) ;; it is a minor-mode and it enabled with 1
 #+end_src
 
 *** Marginalia
