@@ -400,7 +400,30 @@ Need to rewatch the video and take notes
 ** https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/
 - added icons as suggested
 * Questions for Prot
-** OPEN
+** OPEN 
+*** why corfu only works in certain places but not others? Ex. in org in a list completion does NOT work.
+- org is overwrites tab, so it block corfu from getting it
+- corfu has an automode in case you always want to match things
+
+*** why the theme in magit is incorrect? what did i miss?
+- i figured this out based on the modus codebase
+
+*** is there a way to get color in the org blocks for QUOTES?
+- limitation in orgmode
+*** other than emacs lisp api, what else is worth learning?
+- look into the =advice= mechanism - you can redifine the behavior of anything
+- Protesilaos Stavrou dice:advice-add 
+- this is to add scoped environment and clobber functions or symbols
+- can also behave like adding a hook
+*** how do you organize key-bindings? ex. magit has a lot of commands.
+- prot has a video on prefixes 
+- in general he creates trees of keymaps as well similar to spacemacs, but then doesn't use which key, but keeps it for demonstrations.
+*** how can i change the behavior in the minibuffer so that arrows remove up to the /
+- these are are defined in the map of vertico map to delete
+  ("DEL" . vertico-directory-delete-char)
+    ("M-DEL" . vertico-directory-delete-word) 
+
+
 ** CLOSED
 - why i can't call consult-narrow-help from the minibuffer? outside the mini buffer it tells i need to be in a minibuffer, in the minibuffer it tells me i can't call because i am in a minibuffer? do i need to allow recursive minibuffers? and how to do that?
   - *ANSWER: you need that, unless you use key binded then it would work - this would be in the minibuffer key map - in this case vertico mode map*
@@ -473,35 +496,6 @@ CLOSED: [2025-02-20 Thu 10:48]
 - State "DONE"       from "TODO"       [2025-02-20 Thu 10:48]
 :END:
 *** TODO look at prot video on contributing
-** TODO look at the abbrev video
-** DONE fill notes about the videos consumed so I don't forget
-CLOSED: [2025-02-19 Wed 13:16]
-:LOGBOOK:
-- State "DONE"       from "TODO"       [2025-02-19 Wed 13:16]
-:END:
-** DONE look at adding some of the configs for orgmode 
-CLOSED: [2025-02-19 Wed 13:16]
-:LOGBOOK:
-- State "DONE"       from "TODO"       [2025-02-19 Wed 13:16]
-:END:
-** DONE set up py dev env with eglot and pyenv
-CLOSED: [2025-02-19 Wed 20:36]
-:LOGBOOK:
-- State "DONE"       from "TODO"       [2025-02-19 Wed 20:36]
-:END:
-to notice that Flymake, ElDoc, Xref, Project are in emacs already
-- I should use the built in before considering external packages
-- Problem 1: M-. causes to look for a TAGS File
-  i fond this might help, i need to understand, but i guess i need to tell xref that to call?
-  #+begin_src emacs-lisp
-  (use-package eglot
-  :hook
-  (python-base-mode-hook . eglot-ensure))
-  (setq xref-backend-functions '(eglot-xref-backend))
-#+end_src
-I could not get eglot to work with pylsp and i was going nuts!!!!! i installed pyright and it just works.
-
-
 ** TODO Emacs lisp API and following the build of emacs
 - start looking at the emacs api and list
 - how to follow the dev of emacs
@@ -530,8 +524,46 @@ a non-nil value for the inserted character.  At the end, it runs
 - there are 2 manuals - emacs manual for users
   - emacs lisp reference manual (this one is the useful one)
     - ex. create a new frame, what params do they get ...
-** TODO Emoji
+
+** TODO figure out corfu and embark
+** TODO learn about ediff and how to use use effectively
+** DONE homeworks
+*** DONE fill notes about the videos consumed so I don't forget
+CLOSED: [2025-02-19 Wed 13:16]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2025-02-19 Wed 13:16]
+:END:
+*** DONE look at adding some of the configs for orgmode 
+CLOSED: [2025-02-19 Wed 13:16]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2025-02-19 Wed 13:16]
+:END:
+*** DONE set up py dev env with eglot and pyenv
+CLOSED: [2025-02-19 Wed 20:36]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2025-02-19 Wed 20:36]
+:END:
+to notice that Flymake, ElDoc, Xref, Project are in emacs already
+- I should use the built in before considering external packages
+- Problem 1: M-. causes to look for a TAGS File
+  i fond this might help, i need to understand, but i guess i need to tell xref that to call?
+  #+begin_src emacs-lisp
+  (use-package eglot
+  :hook
+  (python-base-mode-hook . eglot-ensure))
+  (setq xref-backend-functions '(eglot-xref-backend))
+#+end_src
+I could not get eglot to work with pylsp and i was going nuts!!!!! i installed pyright and it just works.
+*** DONE look at the abbrev video
+CLOSED: [2025-02-24 Mon 16:59]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2025-02-24 Mon 16:59]
+:END:** 
+*** DONE Emoji
+CLOSED: [2025-02-24 Mon 17:00]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2025-02-24 Mon 17:00]
+:END:
 there is some suport and ther are libs like emojifi but have to test to see if the mess with org tagging
 - :warning:⚠️ =shortdoc= gives a quick reference of functions for developing
 - look into abbrev mode https://protesilaos.com/codelog/2024-02-03-emacs-abbrev-mode/
-

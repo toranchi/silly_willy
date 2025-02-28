@@ -4,18 +4,17 @@
 #+language: en
 #+options: \n:t ^:nil
 #+property: header-args :tangle "init.el"
-#+startup: content indent
+#+startup: overview
 #+macro: test-macro (eval (format-time-string "%F %T %z"))
 
 *Test of export {{{test-macro}}}*
 
+* Chatter
 #+CAPTION: *EMACSのために泣く*
 #+ATTR_HTML: :width 600px
 #+ATTR_ORG: :width 100px
 [[./ゴンドラの歌.png]]
 
-
-* Chatter
 This is the proof that I do not know what I am doing. Please do not look inside this files, as they provide no value to anyone.
 I reached the sad point in life where I simply cannot remember what I did, what I do and especially what I will do. I can't even tell why am I writing in English, as it is not my language either.
 
@@ -46,7 +45,8 @@ Since words should be left to the poets, here are the words of one of the greate
 - =early-init.el= gets executed before init.el, so you can put some happy things there. What? I dunno!
 - =init.el= this loads all the stuff and magic things: probably I should have it load it sub-files to keep things sort of understandable
 
-#+BEGIN_QUOTE
+- TODO break into a structure of files after tangling
+#+begin_QUOTE
 ├── early-init.el
 ├── init.el
 ├── stuff_organized/
@@ -56,6 +56,8 @@ Since words should be left to the poets, here are the words of one of the greate
 #+END_QUOTE
 
 * Customization of =early-init.el=
+
+Remove useless GUI options
 #+begin_src emacs-lisp :tangle "early-init.el"
   ;; turn off the stuff I can't figure out how to use
   ;; menu-bar-mode is like some GUI menu of sort, not sure what it is for nor how to reach it
@@ -112,35 +114,37 @@ When set to a number in a list, try to get the width from any
 #+END_QUOTE
 
 #+begin_src emacs-lisp
-;; Modified from Prot: https://protesilaos.com/codelog/2025-01-16-emacs-org-todo-agenda-basics/
-;; These are the defaults we want to change.  We do so in the
-;; following `use-package' declaration.
-;; (setq org-M-RET-may-split-line '((default . t)))
-;; (setq org-insert-heading-respect-content nil)
-;; (setq org-log-done nil)
-;; (setq org-log-into-drawer nil)
+  ;; Modified from Prot: https://protesilaos.com/codelog/2025-01-16-emacs-org-todo-agenda-basics/
+  ;; These are the defaults we want to change.  We do so in the
+  ;; following `use-package' declaration.
+  ;; (setq org-M-RET-may-split-line '((default . t)))
+  ;; (setq org-insert-heading-respect-content nil)
+  ;; (setq org-log-done nil)
+  ;; (setq org-log-into-drawer nil)
 
 
-(use-package org
-  :ensure nil ; do not try to install it as it is built-in
-  :config
-  (setq org-M-RET-may-split-line '((default . nil)))
-  (setq org-insert-heading-respect-content t)
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
+  (use-package org
+    :ensure nil ; do not try to install it as it is built-in
+    :config
+    (setq org-M-RET-may-split-line '((default . nil)))
+    (setq org-insert-heading-respect-content t)
+    (setq org-log-done 'time)
+    (setq org-log-into-drawer t)
+    (setq org-ellipsis " ") ; a downward triangle
 
-  ;; permit the use or #+ATTR_ORG: :width
-  (setq org-image-actual-width nil)
-  ;; show images always
-  (setq org-startup-with-inline-images t)
 
-  (setq org-directory "~/org/agenda")
-  (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+    ;; permit the use or #+ATTR_ORG: :width
+    (setq org-image-actual-width nil)
+    ;; show images always
+    (setq org-startup-with-inline-images t)
 
-  ;; Learn about the ! and more by reading the relevant section of the
-  ;; Org manual.  Evaluate: (info "(org) Tracking TODO state changes")
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)"))))
+    (setq org-directory "~/org/agenda")
+    (setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+
+    ;; Learn about the ! and more by reading the relevant section of the
+    ;; Org manual.  Evaluate: (info "(org) Tracking TODO state changes")
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "WAIT(w!)" "|" "CANCEL(c!)" "DONE(d!)"))))
 #+end_src
 ** Emacs package
 The following configs were suggested by vertico docs
@@ -156,8 +160,6 @@ The following configs were suggested by vertico docs
     (read-extended-command-predicate #'command-completion-default-include-p)
 
     :init
-    ;; set a larger fringe
-    (fringe-mode 12)
     ;; Add prompt indicator to `completing-read-multiple'.
     ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
     (defun crm-indicator (args)
@@ -181,163 +183,561 @@ The following configs were suggested by vertico docs
 ** Theme Configurations
 *** Set main theme
 
-
-This is the main theme to set colors and such
+This is the main theme to set colors and such. It is Modus-themes with some overlays.
+Modus-theme because it is built into emacs.
 #+begin_src emacs-lisp
-  ;; set theme colors
-  (use-package modus-themes
-    :ensure nil
-    :config
+    ;; set theme colors
+    (use-package modus-themes
+      :ensure nil
+      :config
+      ;; configure the theme color and behavior
 
-    ;; configure the theme color and behavior
+      ;; set fonts constructs
+      (setq modus-themes-italic-constructs t
+    	modus-themes-bold-constructs t
+    	modus-themes-mixed-fonts t
+    	modus-themes-variable-pitch-ui t
+    	modus-themes-custom-auto-reload t
+    	modus-themes-disable-other-themes t)
 
-    ;; set fonts constructs
-    (setq modus-themes-italic-constructs t
-  	modus-themes-bold-constructs t
-  	modus-themes-mixed-fonts t
-  	modus-themes-variable-pitch-ui t
-  	modus-themes-custom-auto-reload t
-  	modus-themes-disable-other-themes t)
+      ;; configure sizing of orgmode headings
+      (setq modus-themes-headings
+    	'((1 . (variable-pitch 1.4))
+    	  (2 . (1.3))
+    	  (3 . (1.2))
+    	  (4 . (1.1))
+    	  (agenda-date . (1.3))
+    	  (agenda-structure . (variable-pitch light 1.3))
+    	  (t . (1.1))))
+      
+      (setq modus-vivendi-tinted-palette-overrides
+    	'(
+  	 
+;;; These base if for dark themes - changing to light it will need mapping changes
+;;; especially because of the grays 
 
-    ;; configure sizing of orgmode headings
-    (setq modus-themes-headings
-  	'((1 . (variable-pitch 1.3))
-  	  (2 . (1.1))
-  	  (agenda-date . (1.3))
-  	  (agenda-structure . (variable-pitch light 1.3))
-  	  (t . (1.1))))
-    
-    (setq modus-vivendi-tinted-palette-overrides
-  	'((bg-main          "#444444") ;; main background
-  	  (bg-dim           "#333333") ;; used in code section of orgmode
-            (fg-main          "#cccccc") ;; main font
-            (fg-dim           "#888888") ;; subtle font like orgmode title
-            (fg-alt           yellow-intense)
-            (bg-active        "#c9b9b0")
-            (bg-inactive      "#dfd5cf")
-            (border           "#9f9690")
+;;; Basic values
 
-  	  ;; Corfu completion look
-  	  (bg-completion         "#CC5500")
-  	  (fg-completion-match-0 "#DD7700")
-  	  (fg-completion-match-1 "#DD7700")
-  	  (fg-completion-match-2 "#DD7700")
-  	  (fg-completion-match-3 "#DD7700")
-  	  (bg-completion-match-0 bg-dim)
-  	  (bg-completion-match-1 bg-dim)
-  	  (bg-completion-match-2 bg-dim)
-  	  (bg-completion-match-3 bg-dim)
-  	  
-  	  ;; nice and bright cursor
-  	  (cursor magenta-intense)
+;; Red Tones
+      (red                        "#FF5A6A")
+      (red-warmer                 "#F95353")
+      (red-cooler                 "#FF7C7C")
+      (red-faint                  "#FF8F98")
+      (red-intense                "#F04656")
+      (bg-red                     "#7A3F3C") 
+      (bg-red-intense             "#B73C48")
+      (bg-red-subtle              "#D78177")
+      (bg-red-nuanced             "#D16E6A")
+      (bg-red-faint               "#8F2D38") 
+      (bg-red-refine              "#9C5F5C") 
 
-  	  ;; programming colors
-  	  (keyword blue-intense)
-  	  (constant blue-cooler)
-            (builtin magenta-intense)
-            (comment fg-dim)
-  	  (string green-faint)
-  	  (docstring green-faint)
-            (fnname magenta)
-  	  (type yellow)
-  	  (variable  "#FFA500")
+      
+;; Green Tones
+      (green                      "#6BBF7E") 
+      (green-warmer               "#87C7A2") 
+      (green-cooler               "#4DAF6F") 
+      (green-faint                "#75C9A6") 
+      (green-intense              "#58C07F") 
+      (bg-green                   "#3A5A47") 
+      (bg-green-intense           "#6C9B60") 
+      (bg-green-subtle            "#68C09D") 
+      (bg-green-nuanced           "#6AB890") 
+      (bg-green-faint             "#4F7A47") 
+      (bg-green-refine            "#4E7B74") 
 
-  	  
-  	  ;; no idea what the next 5 do
-  	  (fg-active-value yellow)
-            (accent-2 yellow)
-  	  (info yellow)
-  	  
-            (fg-prompt yellow)
-            (fg-prose-code yellow)
 
-  	  ;; Orgmode
-  	  (fg-heading-0 magenta-intense) ;; orgmode title
-            (fg-heading-1 "#EE7700") ;; orgmode headings
-            (fg-heading-2 "#FFA500")
-            (fg-heading-3 "#FFDD33")
-            (fg-heading-4 "#FFCC55")
-            (fg-heading-5 "#FFEE66")
-            (fg-heading-6 "#FFFF88")
-            (fg-heading-7 "#FFFFAA")
-            (fg-heading-8 "#FFFFCC")
-            ;; (fg-heading-1 "#0077EE") ;; orgmode headings
-            ;; (fg-heading-2 "#00A5FF")
-            ;; (fg-heading-3 "#33DDFF")
-            ;; (fg-heading-4 "#44DEFF")
-            ;; (fg-heading-5 "#66EEFF")
-            ;; (fg-heading-6 "#88FFFF")
-            ;; (fg-heading-7 "#AAFFFF")
-            ;; (fg-heading-8 "#CCFFFF")
-
-  	  
-  	  ;; orgmode TODO
-  	  (prose-done fg-dim)
-  	  ;; (prose-todo "#FFA500")
-  	  ;; (prose-todo "#0077EE")
-  	  (prose-todo yellow-intense)  	  
-
-  	  ;; org blocks colors - i think these are the same as the default
-  	  (bg-prose-block-contents bg-dim)
-  	  (bg-prose-block-delimiter bg-dim)
-  	  (fg-prose-block-delimiter fg-dim)
-
-  	  ;; orgmode syntax
-  	  (bg-prose-code bg-main)
-  	  (fg-prose-code green-cooler)
-
-  	  (bg-prose-verbatim bg-main)
-  	  (fg-prose-verbatim pink)
-
-  	  (bg-prose-macro bg-dim)
-  	  (fg-prose-macro magenta-cooler)
+;; Yellow Tones             
+      (yellow                     "#F1A92D")
+      (yellow-warmer              "#F7A323")
+      (yellow-cooler              "#F7A94D")
+      (yellow-faint               "#F1B97A")
+      (yellow-intense             "#FFBC40")
+      (bg-yellow                  "#9E6E26")
+      (bg-yellow-intense          "#C77C17")
+      (bg-yellow-subtle           "#E1A156")
+      (bg-yellow-nuanced          "#D88E2E")
+      (bg-yellow-faint            "#9E5C12")
+      (bg-yellow-refine           "#A7783F")
 
 
 
-  	  (prose-tag blue-cooler)
+;; Blue Tones               
+      (blue                       "#7DA0C4")
+      (blue-warmer                "#6188B3")
+      (blue-cooler                "#6DB5C2")
+      (blue-faint                 "#A4C4D3")
+      (blue-intense               "#577DA3")
+      (bg-blue-intense            "#3A6180")
+      (bg-blue-subtle             "#7BA9B7")
+      (bg-blue-nuanced            "#648AA8")
 
-  	  ;; orgmode agenda - still to customize
-  	  (date-common cyan)   ; default value (for timestamps and more)
-  	  (date-deadline red-warmer)
-  	  (date-event magenta-warmer)
-  	  (date-holiday blue) ; for M-x calendar
-  	  (date-now yellow-warmer)
-  	  (date-scheduled magenta-cooler)
-  	  (date-weekday cyan-cooler)
-  	  (date-weekend blue-faint)
-  	  
-            ;; mode line colors
-            (fg-mode-line-active fg-main)
-            (bg-mode-line-active bg-main)
-            (fg-mode-line-inactive fg-dim)
-            (bg-mode-line-inactive bg-main)
+;; Magenta Tones            
+      (magenta                    "#F18BB5")
+      (magenta-warmer             "#F27BC2")
+      (magenta-cooler             "#F06FBB")
+      (magenta-faint              "#F0A2C4")
+      (magenta-intense            "#D45A8F")
+      (bg-magenta-intense         "#D76D7A")
+      (bg-magenta-subtle          "#D87C9E")
+      (bg-magenta-nuanced         "#D06E8F")
 
-            ;; line-number colors
-            (fg-line-number-active fg-main)
-            (bg-line-number-active bg-main)
+;; Cyan Tones               
+      (cyan                       "#66A3C4")
+      (cyan-warmer                "#5D97B1")
+      (cyan-cooler                "#57A4A9")
+      (cyan-faint                 "#91D3E5")
+      (cyan-intense               "#4F8D99")
+      (bg-cyan-intense            "#2E5B69")
+      (bg-cyan-subtle             "#5B9AB3")
+      (bg-cyan-nuanced            "#5A7C87")
 
-  	  ;;
-  	  (fg-link blue-intense)
-  	  (bg-link bg-main)
-  	  (underline-link blue-intense)
-  	  ;; not sure what this does
-  	  ;; (bg-button-active bg-main)
-  	  ;; (fg-button-active fg-main)
-  	  ;; (bg-button-inactive bg-inactive)
-  	  ;; (fg-button-inactive "gray50")
+  ;;; Uncommon Accent Foregrounds
 
-  	  ;; search
-  	  (bg-search-current "#CC5500")
-  	  (bg-search-lazy "#EE7700")
-  	  ;; (bg-search-replace yellow-intense)
-  	  ;; (bg-seach-rx-group-0 yellow-intense)
-  	  ;; (bg-seach-rx-group-1 yellow-intense)
-  	  ;; (bg-seach-rx-group-2 yellow-intense)
-  	  ;;(bg-seach-rx-group-3 yellow-intense)  	  
-  	  ))
-    
-    ;; load the theme after setting the colors
-    (load-theme 'modus-vivendi-tinted t))
+  ;; Special Accent Tones
+      (rust                       "#F27D5D")
+      (gold                       "#F7C56A")
+      (olive                      "#A7C89F")
+      (slate                      "#B38DAA")
+      (indigo                     "#9C7DB9")
+      (maroon                     "#F2A7B4")
+      (pink                       "#F5A9D8")
+
+
+;;; Davide's addons
+
+;;; Davide's grays map
+      (gray-00                    "#000000")
+      (gray-11                    "#111111")
+      (gray-22                    "#222222")
+      (gray-33                    "#333333")
+      (gray-44                    "#444444")
+      (gray-55                    "#555555")
+      (gray-66                    "#666666")
+      (gray-77                    "#777777")
+      (gray-88                    "#888888")
+      (gray-99                    "#999999")
+      (gray-AA                    "#AAAAAA")
+      (gray-BB                    "#BBBBBB")
+      (gray-CC                    "#CCCCCC")
+      (gray-DD                    "#DDDDDD")
+      (gray-EE                    "#EEEEEE")
+      (gray-FF                    "#FFFFFF")
+
+;;; Common accent backgrounds
+
+ ;; Accent Backgrounds
+
+
+
+;;; Uncommon accent background and foreground pairs
+;; Updated background and foreground pairs
+      (bg-clay                    "#C67A6F")
+      (fg-clay                    "#F5D1C7")
+
+      (bg-ochre                   "#D57B2C")
+      (fg-ochre                   "#F4D7A1")
+
+      (bg-lavender                "#B87BB6")
+      (fg-lavender                "#D6A1D2")
+
+      (bg-sage                    "#6F8C85")
+      (fg-sage                    "#C0E4D6")
+
+ ;;; themcol is the selector color, changing this will change all selectors
+ ;;; these sets the main higlight and hues that are used everywhere else
+      (themcol                     red)  
+      (themcol-warmer              red-warmer)  
+      (themcol-cooler              reg-cooler)  
+      (themcol-faint               red-faint)  
+      (themcol-intense             red-intense)
+
+      (fg-themcol-main             "#F1D8F2")  ;; Text
+      (fg-themcol-dim              "#C3A3B9")  ;; Text
+      (fg-themcol-alt              "#FF9F9F")  ;; Text
+      (bg-themcol-main             "#3A2D3A")
+      (bg-themcol-dim              "#2C232C")
+      (bg-themcol-active           "#5F455F")
+      (bg-themcol-inactive         "#3F2D3F")
+      (border-themcol              "#4E3D4E")
+      (bg-themcol-intense          "#D13E4C")  ;; this is a darker themcol for bg
+      (bg-themcol-subtle           "#F9B3B3")
+      (bg-themcol-nuanced          "#F9F2F2")
+
+      (bg-themcol-intense      "#D13E4C") ;; this is a darker themcol
+      (themcol-1               "#F24B56") ;; used for orgmode headings colors
+      (themcol-2               "#F3656C")
+      (themcol-3               "#F57F82")
+      (themcol-4               "#F79999")
+      (themcol-5               "#F9B3B3")
+      (themcol-6               "#F9CCCC")
+      (themcol-7               "#F9E6E6")
+      (themcol-8               "#F9F2F2")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Mappings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;; General mappings
+
+;;;  Basic backgrounds and foregrounds: should be based on the themcol
+      (bg-main          bg-themcol-main)     ;; main back color
+      (bg-dim           bg-themcol-dim)      ;; back color dimmed
+      (fg-main          fg-themcol-main)     ;; main text color
+      (fg-dim           fg-themcol-dim)      ;; text dimmed
+      (fg-alt           fg-themcol-alt)      
+      (bg-active        bg-themcol-active)   
+      (bg-inactive      bg-themcol-inactive) 
+      (border           border-themcol)      
+
+;;; Special purpose
+
+      (bg-completion              themcol)    ;; this is all the bg highlights like in minibuffer vertico or corfu
+      (bg-hover                   gray-EE)    ;; Hover background
+      (bg-hover-secondary         gray-BB)    ;; Secondary hover background
+      (bg-hl-line                 gray-EE)    ;; Highlight Line
+      (bg-region                  bg-active)  ;; Region background on mark and select
+      (fg-region                  gray-DD)    ;; Region foreground
+
+      (bg-char-0                  "#F3A5C4")  ;; Char 1 background
+      (bg-char-1                  "#F5A9D9")  ;; Char 2 background
+      (bg-char-2                  "#F7A0C7")  ;; Char 3 background
+
+
+      (bg-mode-line-active        bg-main)
+      (fg-mode-line-active        fg-main)
+      (border-mode-line-active    bg-main)
+      (bg-mode-line-inactive      bg-main)
+      (fg-mode-line-inactive      fg-dim)
+      (border-mode-line-inactive  bg-dim)
+
+      (modeline-err               red-intense)
+      (modeline-warning           yellow-intense)
+      (modeline-info              cyan-cooler)
+
+      (bg-tab-bar                 "#e0d4ce")
+      (bg-tab-current             "#fbf7f0")
+      (bg-tab-other               "#c8b8b2")
+
+  ;; Below this line it should mostly use the basic back and forground + previous color definitions
+
+      (fringe bg-dim)
+      (cursor themcol)
+
+      (keybind                  red)
+      (name                     magenta)
+      (identifier               yellow-cooler)
+
+      (err                      red-intense)
+      (warning                  yellow-intense)
+      (info                     cyan-intense)
+
+      (underline-err            red-intense)
+      (underline-warning        yellow-intense)
+      (underline-note           cyan-intense)
+
+      (bg-prominent-err         bg-red-intense)
+      (fg-prominent-err         fg-main)
+      (bg-prominent-warning     bg-yellow-intense)
+      (fg-prominent-warning     fg-main)
+      (bg-prominent-note        bg-cyan-intense)
+      (fg-prominent-note        fg-main)
+
+      (bg-active-argument       bg-yellow-nuanced)
+      (fg-active-argument       yellow-warmer)
+      (bg-active-value          bg-cyan-nuanced)
+      (fg-active-value          cyan-warmer)
+
+;;;; Code mappings
+
+      (bracket                 fg-main)
+      (builtin                 magenta-warmer)
+      (comment                 fg-dim)
+      (constant                blue-cooler)
+      (delimiter               fg-main)
+      (docmarkup               magenta-faint)
+      (docstring               green-faint)
+      (fnname                  magenta)
+      (keyword                 magenta-cooler)
+      (number                  fg-main)
+      (operator                fg-main)
+      (preprocessor            red-cooler)
+      (punctuation             fg-main)
+      (rx-backslash            magenta)
+      (rx-construct            green-cooler)
+      (string                  green-faint)
+      (type                    cyan-coller)
+      (variable                cyan)
+
+;;;; Accent mappings
+
+      (accent-0               blue)
+      (accent-1               magenta-warmer)
+      (accent-2               cyan)
+      (accent-3               red)
+
+;;;; Button mappings
+
+      (fg-button-active      fg-main)
+      (fg-button-inactive    fg-dim)
+      (bg-button-active      bg-active)
+      (bg-button-inactive    bg-dim)
+
+;;;; Completion mappings
+
+      (fg-completion-match-0 themcol)
+      (fg-completion-match-1 themcol)
+      (fg-completion-match-2 themcol)
+      (fg-completion-match-3 themcol)
+      (bg-completion-match-0 bg-dim)
+      (bg-completion-match-1 bg-dim)
+      (bg-completion-match-2 bg-dim)
+      (bg-completion-match-3 bg-dim)
+
+
+;;; Graphs
+
+      (bg-graph-red-0        red)
+      (bg-graph-red-1        red-warmer)
+      (bg-graph-green-0      green)
+      (bg-graph-green-1      green-warmer)
+      (bg-graph-yellow-0     yellow)
+      (bg-graph-yellow-1     yellow-warmer)
+      (bg-graph-blue-0       blue)
+      (bg-graph-blue-1       blue-warmer)
+      (bg-graph-magenta-0    magenta)
+      (bg-graph-magenta-1    magenta-warmer)
+      (bg-graph-cyan-0       cyan)
+      (bg-graph-cyan-1       cyan-warmer)
+
+
+;;; Diffs
+
+      (bg-added               bg-green)
+      (bg-added-faint         bg-green-faint)
+      (bg-added-refine        bg-green-refine)
+      (bg-added-fringe        bg-green-intense)
+      (fg-added               green)
+      (fg-added-intense       green-intense)
+      
+      (bg-changed             bg-yellow)
+      (bg-changed-faint       bg-yellow-faint)
+      (bg-changed-refine      bg-yellow-refine)
+      (bg-changed-fringe      bg-yellow-intense)
+      (fg-changed             yellow)
+      (fg-changed-intense     yellow-intense)
+      
+      (bg-removed             bg-red)
+      (bg-removed-faint       bg-red-faint)
+      (bg-removed-refine      bg-red-refine)
+      (bg-removed-fringe      bg-red-intense)
+      (fg-removed             red)
+      (fg-removed-intense     red-intense) ;; intense red text
+      
+      (bg-diff-context       bg-dim)
+
+;;; Paren match
+
+      (bg-paren-match        themcol-5)
+      (fg-paren-match        bg-dim)
+      (bg-paren-expression   themcol-8)
+      (underline-paren-match unspecified)
+
+
+
+;;;; Date mappings
+
+      (date-common           cyan)
+      (date-deadline         red-cooler)
+      (date-deadline-subtle  red-faint)
+      (date-event            fg-alt)
+      (date-holiday          red)
+      (date-holiday-other    blue)
+      (date-now              fg-main)
+      (date-range            fg-alt)
+      (date-scheduled        yellow)
+      (date-scheduled-subtle yellow-faint)
+      (date-weekday          cyan)
+      (date-weekend          magenta)
+
+;;;; Line number mappings
+
+      (fg-line-number-inactive fg-dim)
+      (fg-line-number-active fg-main)
+      (bg-line-number-inactive bg-main)
+      (bg-line-number-active themcol)
+
+;;;; Link mappings
+
+      (fg-link blue-warmer)
+      (bg-link unspecified)
+      (underline-link blue-warmer)
+
+      (fg-link-symbolic cyan)
+      (bg-link-symbolic unspecified)
+      (underline-link-symbolic cyan)
+
+      (fg-link-visited magenta)
+      (bg-link-visited unspecified)
+      (underline-link-visited magenta)
+
+;;;; Mail mappings
+
+      (mail-cite-0 blue-faint)
+      (mail-cite-1 yellow-warmer)
+      (mail-cite-2 cyan-cooler)
+      (mail-cite-3 red-cooler)
+      (mail-part cyan)
+      (mail-recipient magenta-cooler)
+      (mail-subject magenta-warmer)
+      (mail-other magenta-faint)
+
+;;;; Mark mappings
+
+      (bg-mark-delete bg-red-subtle)
+      (fg-mark-delete red)
+      (bg-mark-select bg-cyan-subtle)
+      (fg-mark-select cyan)
+      (bg-mark-other bg-yellow-subtle)
+      (fg-mark-other yellow)
+
+;;;; Prompt mappings
+
+      (fg-prompt themcol) ;; minibuffer prompt
+      (bg-prompt unspecified)
+
+;;;; Prose mappings
+
+      (bg-prose-block-delimiter bg-dim)
+      (fg-prose-block-delimiter fg-dim)
+      (bg-prose-block-contents bg-dim)
+
+      (bg-prose-code bg-main)
+      (fg-prose-code cyan-intense)
+
+      (bg-prose-macro bg-dim)
+      (fg-prose-macro magenta-cooler)
+
+      (bg-prose-verbatim bg-main)
+      (fg-prose-verbatim magenta-warmer)
+
+      (prose-done fg-dim)
+      (prose-todo yellow-intense)
+
+      (prose-metadata fg-dim)
+      (prose-metadata-value fg-alt)
+
+      (prose-table fg-alt)
+      (prose-table-formula magenta-warmer)
+
+      (prose-tag magenta-faint)
+
+;;;; Rainbow mappings
+
+      (rainbow-0 fg-main)
+      (rainbow-1 magenta-intense)
+      (rainbow-2 cyan-intense)
+      (rainbow-3 red-warmer)
+      (rainbow-4 yellow-intense)
+      (rainbow-5 magenta-cooler)
+      (rainbow-6 green-intense)
+      (rainbow-7 blue-warmer)
+      (rainbow-8 magenta-warmer)
+
+;;;; Search mappings
+
+      (bg-search-current themcol)
+      (bg-search-lazy    themcol-faint)
+      (bg-search-replace bg-red-intense)
+
+      (bg-search-rx-group-0 bg-blue-intense)
+      (bg-search-rx-group-1 bg-green-intense)
+      (bg-search-rx-group-2 bg-red-subtle)
+      (bg-search-rx-group-3 bg-magenta-subtle)
+
+;;;; Space mappings
+
+      (bg-space unspecified)
+      (fg-space border)
+      (bg-space-err bg-red-intense)
+
+;;;; Terminal mappings
+
+      (bg-term-black           gray-00)
+      (fg-term-black           gray-00)
+      (bg-term-black-bright    gray-66)
+      (fg-term-black-bright    gray-66)
+
+      (bg-term-red             red)
+      (fg-term-red             red)
+      (bg-term-red-bright      red-warmer)
+      (fg-term-red-bright      red-warmer)
+
+      (bg-term-green           green)
+      (fg-term-green           green)
+      (bg-term-green-bright    green-cooler)
+      (fg-term-green-bright    green-cooler)
+
+      (bg-term-yellow          yellow)
+      (fg-term-yellow          yellow)
+      (bg-term-yellow-bright   yellow-warmer)
+      (fg-term-yellow-bright   yellow-warmer)
+
+      (bg-term-blue            blue)
+      (fg-term-blue            blue)
+      (bg-term-blue-bright     blue-warmer)
+      (fg-term-blue-bright     blue-warmer)
+
+      (bg-term-magenta         magenta)
+      (fg-term-magenta         magenta)
+      (bg-term-magenta-bright  magenta-cooler)
+      (fg-term-magenta-bright  magenta-cooler)
+
+      (bg-term-cyan            cyan)
+      (fg-term-cyan            cyan)
+      (bg-term-cyan-bright     cyan-cooler)
+      (fg-term-cyan-bright     cyan-cooler)
+
+      (bg-term-white           gray-AA)
+      (fg-term-white           gray-AA)
+      (bg-term-white-bright    gray-FF)
+      (fg-term-white-bright    gray-FF)
+
+;;;; Heading mappings
+
+      (fg-heading-0 themcol) ;; orgmode title
+      (fg-heading-1 themcol-1)
+      (fg-heading-2 themcol-2)
+      (fg-heading-3 themcol-3)
+      (fg-heading-4 themcol-4)
+      (fg-heading-5 themcol-5)
+      (fg-heading-6 themcol-6)
+      (fg-heading-7 themcol-7)
+      (fg-heading-8 themcol-8)
+
+      (bg-heading-0 unspecified)
+      (bg-heading-1 unspecified)
+      (bg-heading-2 unspecified)
+      (bg-heading-3 unspecified)
+      (bg-heading-4 unspecified)
+      (bg-heading-5 unspecified)
+      (bg-heading-6 unspecified)
+      (bg-heading-7 unspecified)
+      (bg-heading-8 unspecified)
+
+      (overline-heading-0 unspecified)
+      (overline-heading-1 unspecified)
+      (overline-heading-2 unspecified)
+      (overline-heading-3 unspecified)
+      (overline-heading-4 unspecified)
+      (overline-heading-5 unspecified)
+      (overline-heading-6 unspecified)
+      (overline-heading-7 unspecified)
+      (overline-heading-8 unspecified)
+
+    	  ))
+      
+      ;; load the theme after setting the colors
+      (load-theme 'modus-vivendi-tinted t))
 #+end_src
 *** Spacious Padding / prettier UI
 
@@ -363,8 +763,10 @@ I don't understand this part and will need to talk to Prot
 #+end_src
 
 ** Dired
-NO IDEA WHAT THIS DOES, i need to ask to Prot
+
+Add some recursive behavior and set some keys for the subtree to use with <TAB>
 #+begin_src emacs-lisp
+  ;; configure dired and put some keys for easy navigation
   (use-package dired
     :ensure nil
     :commands (dired)
@@ -414,32 +816,29 @@ This package offer a menu helper for key-bindings in case i forget them
  #+end_src
 
 *** Rainbow delimeters
+
 Add rainbow delimiters cause ((((()))))
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters 
     :ensure t
     :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
-
-*** Line mode global
-#+begin_src emacs-lisp
-  ;; show numberlines everywhere
-  ;;(global-display-line-numbers-mode t)
-#+end_src
-
 *** Delsel
+
 I do *NOT* want to write over selected regions. I am happy to have go use *Delete*
-#+begin_src emacs-lisp
+Below is what Prot sets, but the default behavior is OK with me.
+#+begin_src emacs-lisp :tangle no
   ;; (use-package delsel
   ;;   :ensure nil ; no need to install it as it is built-in
   ;;   :hook (after-init . delete-selection-mode))
 #+end_src
-
 *** C-g behavior
+
 This is straight from Prot: https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/
 It gives an improve =C-g= that first close the minibuffer if it is open, since 90% of the times that is what people what to do.
 
-The original behavior is as follow
+The original behavior is as follow:
+
 #+BEGIN_QUOTE
 keyboard-quit is an interactive byte-code-function in ‘simple.el’.
 
@@ -449,6 +848,7 @@ Signal a ‘quit’ condition.
 During execution of Lisp code, this character causes a quit directly.
 At top-level, as an editor command, this simply beeps.
 #+END_QUOTE
+
 #+begin_src emacs-lisp
   (defun prot/keyboard-quit-dwim ()
     "Do-What-I-Mean behaviour for a general `keyboard-quit'.
@@ -478,18 +878,21 @@ At top-level, as an editor command, this simply beeps.
 #+end_src
 
 *** Savehist
+
 Prot says:
 #+BEGIN_QUOTE
 The built-in savehist package keeps a record of user inputs and stores them across sessions. Thus, the user will always see their latest choices closer to the top (such as with M-x).
 #+END_QUOTE
+
 #+begin_src emacs-lisp
   (use-package savehist
     :ensure nil ; it is built-in
     :hook (after-init . savehist-mode))
 #+end_src
-
 *** Nerd fonts
-Set nerd fonts to be used in a few places
+
+Set nerd fonts to be used in a few places.
+This requires installing nerd-fonts on the system.
 #+begin_src emacs-lisp
   (use-package nerd-icons
     :ensure t)
@@ -511,9 +914,10 @@ Set nerd fonts to be used in a few places
     :hook
     (dired-mode . nerd-icons-dired-mode))
 #+end_src
-
 *** Isearch behavior
+
 Taken from: https://protesilaos.com/codelog/2023-06-10-emacs-search-replace-basics/
+This adds counter of matches and info about which match you are on.
 #+begin_src emacs-lisp
 ;; Display a counter showing the number of the current and the other
 ;; matches.  Place it before the prompt, though it can be after it.
@@ -526,9 +930,53 @@ Taken from: https://protesilaos.com/codelog/2023-06-10-emacs-search-replace-basi
 ;; it.
 (setq search-whitespace-regexp ".*?")
 #+end_src
+*** ace window
 
+Ace windows binds =M-o= to a numbered window selector - we set the colors to be obnoxious by hardcoding :facepalm:
+#+begin_src emacs-lisp
+  ;; intall ace and 
+  (use-package ace-window
+    :ensure t
+    :config
+    (global-set-key (kbd "M-o") 'ace-window)
+    )
+
+  ;; hadcode colors because I am a lazy cat
+  (custom-set-faces
+   '(aw-leading-char-face
+     ((t (:foreground "#444444" :background "#EE7700" :weight bold :height 3.5)))))
+#+end_src
+
+*** indent-guides
+
+This shows indent lines when the cursors is over an indented area
+#+begin_src emacs-lisp
+  ;; adds indentation lines when programming, to help with python
+  (use-package indent-guide
+    :ensure t
+    :config
+    ;; Enable indent-guide only in programming modes
+    (add-hook 'prog-mode-hook 'indent-guide-mode))
+#+end_src
+*** emoji-insert
+
+add emojis quickly ⚠️ this is an emacs built in after 29
+#+begin_src emacs-lisp
+  ;; this is to add emojis quickly
+  (use-package emoji-insert
+    :ensure nil
+)
+#+end_src
+*** line truncation
+
+I get confused when the lines disappear.
+#+begin_src emacs-lisp
+  ;; don't truncate lines, go to the next line
+  (setq-default truncate-lines nil)
+#+end_src
 ** Minibuffer setup
 *** Vertico
+
 Vertico: organizes the minibuffer in a vertical layout and help with the search of completions
 #+begin_src emacs-lisp
   (use-package vertico
@@ -542,14 +990,15 @@ Vertico: organizes the minibuffer in a vertical layout and help with the search 
 #+end_src
 
 *** Marginalia
+
 Marginalia: gives extra information in the mini buffer
 #+begin_src emacs-lisp
   (use-package marginalia
     :ensure t
     :config (marginalia-mode 1)) ;; it is a minor mode
 #+end_src
-
 *** Consult
+
 Consult: gives previews where available, it combines buffers, bookmarks and recently visited files
 Can be used on many things, ex, Info pages, you can select a info manual like emcacs and search for "mini-buffer" and go through all the relevant pages quickly
 
@@ -561,10 +1010,9 @@ consult-buffer: to go through buffers.
       ( :map global-map
         ("M-g M-g" . consult-goto-line)))
 #+end_src
-
 *** Embark
-
 *** Orderless
+
 Extend search to have out of order items
 
 The recommended settings according to vertico docs
@@ -626,10 +1074,9 @@ overrides the default specified in ‘completion-category-defaults’.
   version 31.1 of Emacs.
   You can customize this variable.
 #+END_QUOTE
+*** Corfu COmpletion in Region FUnction
 
-** Corfu COmpletion in Region FUnction
-
-
+This is from prot. I hear that you can set automode to always autocomplete, but it's not for me. The <tab> conflicts with orgmode 😠
 #+begin_src emacs-lisp
   ;; From Prot will need to understand
       ;;; Corfu (in-buffer completion popup)
@@ -651,37 +1098,47 @@ overrides the default specified in ‘completion-category-defaults’.
       (corfu-history-mode 1)
       (add-to-list 'savehist-additional-variables 'corfu-history)))
 #+end_src
+*** Dashboard
 
-
-
-*  Dashboard
 whatchout that having the configs under :config instead of :custom causes an error with the icons, not sure why: open bug: https://github.com/emacs-dashboard/emacs-dashboard/issues/459
 #+begin_src emacs-lisp
-  ;; use-package with package.el:
-  (use-package dashboard
-    :ensure t
-    :config
-    (dashboard-setup-startup-hook)
-    :custom
-    (dashboard-startup-banner "~/Pictures/logo.png")
-    (dashboard-banner-logo-title nil)
-    (dashboard-center-content t)
-    (dashboard-icon-type 'nerd-icons)
-    (dashboard-set-heading-icons t)
-    (dashboard-set-file-icons t)
-    (dashboard-set-footer nil)
-    (dashboard-projects-backend 'project-el)
-    (dashboard-display-icons-p t)
-    (dashboard-items '(
-                       (recents . 10)
-                       (agenda . 10)
-                       (projects . 5)
-                       (bookmarks . 10)
-                       (registers . 5)
-                       )))
-#+end_src
+    ;; use-package with package.el:
+    (use-package dashboard
+      :ensure t
+      :config
+      (custom-set-faces
+       '(dashboard-heading ((t (:foreground "#338fff" :weight bold))))
+       ;;'(dashboard-banner-logo-title ((t (:foreground "gold" :weight bold))))
+       ;;'(dashboard-footer ((t (:foreground "gray" :italic t))))
+       ;;'(dashboard-footer-icon ((t (:foreground "orange"))))
+       ;;'(dashboard-navigator ((t (:foreground "light blue"))))
+       ;;'(dashboard-items-face ((t (:foreground "white"))))
+       )
 
-** EMMS
+
+      
+      (dashboard-setup-startup-hook)
+      :custom
+      (dashboard-startup-banner "~/Pictures/logo.png")
+      (dashboard-banner-logo-title nil)
+      (dashboard-center-content t)
+      (dashboard-icon-type 'nerd-icons)
+      (dashboard-set-heading-icons t)
+      (dashboard-set-file-icons t)
+      (dashboard-set-footer nil)
+      (dashboard-projects-backend 'project-el)
+      (dashboard-display-icons-p t)
+      (dashboard-week-agenda t)
+      (dashboard-items '(
+                         (recents . 10)
+                         (agenda . 10)
+                         (projects . 5)
+                         (bookmarks . 10)
+                         (registers . 5)
+                         )))
+#+end_src
+** Others
+*** EMMS
 emms smart browse help seeing the list of songs to be played
 I found this config here https://lucidmanager.org/productivity/configure-emms/
 
@@ -696,6 +1153,8 @@ After the basic config there are a couple of helper functions to reduce the data
     (emms-all)
     (emms-default-players)
     (emms-mpris-enable)
+    (emms-playing-time-mode -1)
+    (emms-mode-line-mode -1)
     (setq emms-player-list '(emms-player-vlc emms-player-mpv))
     :custom
     (emms-browser-covers #'emms-browser-cache-thumbnail-async)
@@ -743,10 +1202,10 @@ After the basic config there are a couple of helper functions to reduce the data
   (setq emms-track-description-function 'my-emms-track-description)
 #+end_src
 
-** Packages to look?
+*** Packages to look?
 - ace-window or something to move between windows in a better way
 
-** Python 
+*** Python 
 - you need a major mode - py is built into emacs (colors/indentation/imenu/...)
 - lsp server - pylsp
   - eglot is a lsp client - lsp-mode is external to emacs - eglot is the supported by emacs
@@ -808,31 +1267,52 @@ Some of the configs will continue in eglot
               ("M-p" . flymake-goto-prev-error)))
   #+end_src
   
-** Yaml
+*** Yaml
+
+Cause yaml files unfortunately exist
 #+begin_src emacs-lisp
   (use-package yaml-mode
   :ensure t)
 #+end_src
+*** eglot
 
-** eglot
-
+This work with pyright, did not test with other lsp.
 #+begin_src emacs-lisp
   (use-package eglot
     :ensure nil
     :hook
     (python-base-mode-hook . eglot-ensure))
-
-  ;; I have to test if this is really necessary, but i was getting errors
-  ;;(setq xref-backend-functions '(eglot-xref-backend))
 #+end_src
-
-** AI 
+*** AI 
 - gptel - it's mature 
 
-** look crdt - for pairing
+*** Modeline
 
-* =theme_config.el= Pretty UI
-* =python_config.el= Python development
-* =emms_config.el= Music player
+Configure the modeline: WIP
+#+begin_src emacs-lisp
+  ;; adds icons to certain modes
+  (defun my-mode-icon ()
+        "Return a Nerd Font icon based on `major-mode`."
+        (let ((icon (alist-get major-mode
+                               '((org-mode . "")       ;; Unicorn for Org mode
+                                 (Info-mode . "")    ;; Info icon
+                                 (dashboard-mode . "")    ;; Dashboard icon
+                                 (vterm-mode . " ")    ;; Terminal icon
+                                 (rust-mode . "")      ;; Rust icon
+                                 (python-mode . ""))   ;; Python icon 
+                               nil nil 'string=)))
+          (if icon (concat " " icon " ") ""))) ;; Add spacing around icon
+
+      (setq-default mode-line-modes
+                    (append '((:eval (my-mode-icon))) mode-line-modes))
+#+end_src
+** Vterm
+
+To get vterm working you will need Cmake and libtool installed.
+To notice that fish shell will set its own colors so it is necessary to configure it with ~fish_config browse~
+#+begin_src emacs-lisp
+(use-package
+  :ensure t)
+#+end_src
 
 
