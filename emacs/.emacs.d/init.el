@@ -1,6 +1,6 @@
 ;; use-package is available from 29+ otherwise (package-install 'use-package)
 (require 'package) ;; this always get the latest version (elpaca builds from git and helps with versioning)
-  (package-initialize)
+(package-initialize)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 ;; move the changed provided from customize to a separate file from init.el
@@ -71,7 +71,7 @@
 
 ;; set theme colors
     (use-package modus-themes
-      :ensure nil
+      :ensure t
       :config
       ;; configure the theme color and behavior
 
@@ -95,7 +95,6 @@
       
       (setq modus-vivendi-tinted-palette-overrides
     	'(
-  	 
 ;;; These base if for dark themes - changing to light it will need mapping changes
 ;;; especially because of the grays 
 
@@ -275,9 +274,9 @@
 ;;; Special purpose
 
       (bg-completion              themcol)    ;; this is all the bg highlights like in minibuffer vertico or corfu
-      (bg-hover                   gray-EE)    ;; Hover background
-      (bg-hover-secondary         gray-BB)    ;; Secondary hover background
-      (bg-hl-line                 gray-EE)    ;; Highlight Line
+      (bg-hover                   themcol)    ;; Hover background
+      (bg-hover-secondary         themcol)    ;; Secondary hover background
+      (bg-hl-line                 themcol)    ;; Highlight Line
       (bg-region                  bg-active)  ;; Region background on mark and select
       (fg-region                  gray-DD)    ;; Region foreground
 
@@ -616,7 +615,6 @@
       (overline-heading-6 unspecified)
       (overline-heading-7 unspecified)
       (overline-heading-8 unspecified)
-
     	  ))
       
       ;; load the theme after setting the colors
@@ -675,6 +673,10 @@
 (use-package rainbow-delimiters 
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
+
+;; (use-package delsel
+;;   :ensure nil ; no need to install it as it is built-in
+;;   :hook (after-init . delete-selection-mode))
 
 (defun prot/keyboard-quit-dwim ()
   "Do-What-I-Mean behaviour for a general `keyboard-quit'.
@@ -757,9 +759,9 @@ The DWIM behaviour of this command is as follows:
   (add-hook 'prog-mode-hook 'indent-guide-mode))
 
 ;; this is to add emojis quickly
-  (use-package emoji-insert
-    :ensure nil
-)
+;;(use-package emoji-insert
+;;  :ensure nil
+;;  )
 
 ;; don't truncate lines, go to the next line
 (setq-default truncate-lines nil)
@@ -771,7 +773,14 @@ The DWIM behaviour of this command is as follows:
      ;; (vertico-count 20) ;; Show more candidates
      ;; (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
   (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
-  :config (vertico-mode 1)) ;; it is a minor-mode and it enabled with 1
+  :config (vertico-mode 1)
+  :bind
+  (:map vertico-map
+	("<left>" . vertico-directory-delete-word)
+	("DEL" . vertico-directory-delete-char)
+	("M-DEL" . vertico-directory-delete-word)
+	("M-," . vertico-quick-insert)
+	("M-." . vertico-quick-exit))) ;; it is a minor-mode and it enabled with 1
 
 (use-package marginalia
   :ensure t
@@ -972,5 +981,10 @@ rather than the whole path."
     (setq-default mode-line-modes
                   (append '((:eval (my-mode-icon))) mode-line-modes))
 
-(use-package
+(use-package vterm
   :ensure t)
+
+;; Make native compilation silent and prune its cache.
+(when (native-comp-available-p)
+  (setq native-comp-async-report-warnings-errors 'silent)
+  (setq native-compile-prune-cache t))

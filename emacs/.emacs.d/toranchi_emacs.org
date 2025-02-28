@@ -75,7 +75,7 @@ Remove useless GUI options
 #+begin_src emacs-lisp
   ;; use-package is available from 29+ otherwise (package-install 'use-package)
   (require 'package) ;; this always get the latest version (elpaca builds from git and helps with versioning)
-    (package-initialize)
+  (package-initialize)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 #+end_src
 
@@ -188,7 +188,7 @@ Modus-theme because it is built into emacs.
 #+begin_src emacs-lisp
     ;; set theme colors
     (use-package modus-themes
-      :ensure nil
+      :ensure t
       :config
       ;; configure the theme color and behavior
 
@@ -212,7 +212,6 @@ Modus-theme because it is built into emacs.
       
       (setq modus-vivendi-tinted-palette-overrides
     	'(
-  	 
 ;;; These base if for dark themes - changing to light it will need mapping changes
 ;;; especially because of the grays 
 
@@ -392,9 +391,9 @@ Modus-theme because it is built into emacs.
 ;;; Special purpose
 
       (bg-completion              themcol)    ;; this is all the bg highlights like in minibuffer vertico or corfu
-      (bg-hover                   gray-EE)    ;; Hover background
-      (bg-hover-secondary         gray-BB)    ;; Secondary hover background
-      (bg-hl-line                 gray-EE)    ;; Highlight Line
+      (bg-hover                   themcol)    ;; Hover background
+      (bg-hover-secondary         themcol)    ;; Secondary hover background
+      (bg-hl-line                 themcol)    ;; Highlight Line
       (bg-region                  bg-active)  ;; Region background on mark and select
       (fg-region                  gray-DD)    ;; Region foreground
 
@@ -733,7 +732,6 @@ Modus-theme because it is built into emacs.
       (overline-heading-6 unspecified)
       (overline-heading-7 unspecified)
       (overline-heading-8 unspecified)
-
     	  ))
       
       ;; load the theme after setting the colors
@@ -789,7 +787,7 @@ Add some recursive behavior and set some keys for the subtree to use with <TAB>
       ("<backtab>" . dired-subtree-remove)
       ("S-TAB" . dired-subtree-remove))
     :config
-    (setq dired-subtree-use-backgrounds nil))  
+    (setq dired-subtree-use-backgrounds nil))
 #+end_src  
 ** Helpers
 *** Flyspell / spellchecking
@@ -801,8 +799,7 @@ Flyspell puts the squiggle lines under misspelled words, so you can pretend you 
     :ensure nil
     :hook ((text-mode . flyspell-mode)
            (prog-mode . flyspell-prog-mode)))
-  
-#+end_src
+  #+end_src
 
 *** Which-Key / a small menu for keybinds completion
 
@@ -827,7 +824,7 @@ Add rainbow delimiters cause ((((()))))
 
 I do *NOT* want to write over selected regions. I am happy to have go use *Delete*
 Below is what Prot sets, but the default behavior is OK with me.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   ;; (use-package delsel
   ;;   :ensure nil ; no need to install it as it is built-in
   ;;   :hook (after-init . delete-selection-mode))
@@ -962,10 +959,10 @@ This shows indent lines when the cursors is over an indented area
 
 add emojis quickly ⚠️ this is an emacs built in after 29
 #+begin_src emacs-lisp
-  ;; this is to add emojis quickly
-  (use-package emoji-insert
-    :ensure nil
-)
+    ;; this is to add emojis quickly
+    ;;(use-package emoji-insert
+    ;;  :ensure nil
+    ;;  )
 #+end_src
 *** line truncation
 
@@ -986,7 +983,14 @@ Vertico: organizes the minibuffer in a vertical layout and help with the search 
        ;; (vertico-count 20) ;; Show more candidates
        ;; (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
     (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
-    :config (vertico-mode 1)) ;; it is a minor-mode and it enabled with 1
+    :config (vertico-mode 1)
+    :bind
+    (:map vertico-map
+  	("<left>" . vertico-directory-delete-word)
+  	("DEL" . vertico-directory-delete-char)
+  	("M-DEL" . vertico-directory-delete-word)
+  	("M-," . vertico-quick-insert)
+  	("M-." . vertico-quick-exit))) ;; it is a minor-mode and it enabled with 1
 #+end_src
 
 *** Marginalia
@@ -1311,8 +1315,16 @@ Configure the modeline: WIP
 To get vterm working you will need Cmake and libtool installed.
 To notice that fish shell will set its own colors so it is necessary to configure it with ~fish_config browse~
 #+begin_src emacs-lisp
-(use-package
+(use-package vterm
   :ensure t)
 #+end_src
+** disable warning from native compilation
 
+I am tired of the warnings
+#+begin_src emacs-lisp
 
+  ;; Make native compilation silent and prune its cache.
+  (when (native-comp-available-p)
+    (setq native-comp-async-report-warnings-errors 'silent)
+    (setq native-compile-prune-cache t))
+#+end_src
