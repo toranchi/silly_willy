@@ -177,9 +177,9 @@
 ;;; Special purpose
 
       (bg-completion              themcol)    ;; this is all the bg highlights like in minibuffer vertico or corfu
-      (bg-hover                   gray-EE)    ;; Hover background
-      (bg-hover-secondary         gray-BB)    ;; Secondary hover background
-      (bg-hl-line                 gray-EE)    ;; Highlight Line
+      (bg-hover                   themcol)    ;; Hover background
+      (bg-hover-secondary         themcol)    ;; Secondary hover background
+      (bg-hl-line                 themcol)    ;; Highlight Line
       (bg-region                  bg-active)  ;; Region background on mark and select
       (fg-region                  gray-DD)    ;; Region foreground
 
