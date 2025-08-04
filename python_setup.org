@@ -34,7 +34,7 @@
   workon $ARG
 
   # install the required pips in the venv
-  pip install poetry
+  #pip install poetry
   pip install pyright ruff
 
   echo "Script finished successfully."

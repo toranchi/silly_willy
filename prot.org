@@ -272,7 +272,19 @@ there is some suport and ther are libs like emojifi but have to test to see if t
 - lsp server - pylsp
   - eglot is a lsp client - lsp-mode is external to emacs - eglot is the supported by emacs
 - Add with less packages and only add if needed
-
+* <2025-03-18 Tue> Meeting 3
+- 
+- 
+* <2025-03-26 Wed> Meeting 4
+- modeline
+- ediff how to not open the extra window on the side to control navigation
+- study of politics
+  - stoics
+  - aristotle - plato
+  - adam smith
+  - frederic bastia
+* 
+* 
 * Prot Videos Consumed
 ** https://protesilaos.com/codelog/2025-01-26-emacs-organise-init/
 Added changed to toranchi emacs configs - some cool orgmode tricks like
@@ -567,3 +579,31 @@ CLOSED: [2025-02-24 Mon 17:00]
 there is some suport and ther are libs like emojifi but have to test to see if the mess with org tagging
 - :warning:⚠️ =shortdoc= gives a quick reference of functions for developing
 - look into abbrev mode https://protesilaos.com/codelog/2024-02-03-emacs-abbrev-mode/
+* Denote
+- long term storage of notes and pics and data you care about - being able to retrieve by filename only
+  - use the file name to create other file or to rename other files 
+  - predictable file names with unique identifier that can be used to link and do retrieval by association
+  - to run test files evaluate buffer uses 'ert for testing - emacs regression test M-x ert
+  - you need to eval the buffer to load the tests or use provide 'denote-test
+  - he uses dst for denote-sequence-test
+  - there is not test coverage info - but he would like to have that - there is another framework buttercup behavior driven
+  - he is working on Query linking
+    - retrieval by:
+      - file name 
+      - direct link
+      - associations (keyworkds, date, common title)
+      - query results (grep: by content) (can create a link that causes grep to create a list of files with the match)
+        - you could point to a specific file to a file or with query you can link to files by grep
+        - ex denote:name:query-contents: or query-filename:word_to_search ex: keeb and keeb is a #+filetags that come from the filename __ 
+        - also search on query-contents 
+        - you can search the filename or you can use other search other title tokens __ -- and so on (depending on the query it uses find or grep)
+        - filename and so on support regex
+        - query does not support mixing find and grep at the moment
+  - denote has a concept of silos, standalone folders (music, videos, ....)
+  - https://protesilaos.com/codelog/2025-03-31-emacs-denote-journal-calendar/ this is an example for dates from file names
+- featurep look at this function, it shows if a function is loaded or not for lazy loading
+- package manager when you install checks for autoload and crate denote-autoload.el, copies comments directly from function and create .pkg file with some extra info
+  - also create file for the info manual 
+- he is breaking the code into different pieces (silos, org, sequence)
+- check xapian and recoll
+
